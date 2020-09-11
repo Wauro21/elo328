@@ -28,6 +28,9 @@ void table_creator();
 auto start = std::chrono::high_resolution_clock::now();
 auto stop = std::chrono::high_resolution_clock::now();
 auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+double sumFrame = 0.0f;
+double avgFrame = 0.0f;
+unsigned int nFrames = 0;
 /* ------------------------------------------------------ */
 
 int main(int argc, char* argv[]) {
@@ -43,13 +46,12 @@ int main(int argc, char* argv[]) {
         if (img.empty()) {
             cerr << "Error reading image " << endl;
             return 1;
-        }
-
+					}
+					
         cv::Mat result;
         processImage(result, img);
 				duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-				std::cout << duration.count() << std::endl;
-				std::cout << (double) duration.count() << std::endl;
+				std::cout << "Tiempo ejecucion del modo " << argv[1] << " :" << duration.count() << "[us]" << std::endl;
         cout << "Valor gamma = " << g_gamma << endl;
         cv::imshow("Input Image", img);
         cv::imshow("Result", result);
@@ -72,8 +74,11 @@ int main(int argc, char* argv[]) {
             vid >> img;
 
             cv::Mat result;
+						nFrames += 1;
             processImage(result, img);
-
+						sumFrame += (double) duration.count();
+						avgFrame = (double) sumFrame/nFrames;
+						std::cout << "Tiempo Promedio por frame del modo "<< argv[1] << ":" << avgFrame << "[us]" << std::endl;
             cv::imshow("Video", img);
             cv::imshow("Modified video", result);
             if (cv::waitKey(10) != -1)
