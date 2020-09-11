@@ -10,6 +10,16 @@ Felipe Villenas
 
 ## Notas
 
+Para una sección de 200x200 pixeles, se calcula el promedio de los tiempos
+obtenidos por los cinco integrantes.
+
+imagen:
+m1 150[us]
+m2 2436[us]
+
+video:
+m1 164[us]
+m2 2861[us]
 
 ## Compilación
 
