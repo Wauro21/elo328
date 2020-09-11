@@ -3,7 +3,7 @@
 #include <opencv2/imgproc.hpp>
 #include <iostream>
 #include <math.h>
-
+#include <chrono>
 using namespace std;
 
 enum class P_MODE { IMAGE, VIDEO } proc_mode;
@@ -57,10 +57,14 @@ int main(int argc, char* argv[]) {
         if (gamma_mode == G_MODE::M1) {
             table_creator();
         }
-
+				auto start = std::chrono::high_resolution_clock::now(); //Tiempo inicial
         // implementa correccion gamma segun parametro m1 o m2
         correccionGamma(*roi);
+				auto stop = std::chrono::high_resolution_clock::now(); //Tiempo final
 
+				// - Print de la diferencia de tiempo
+				auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+				std::cout << "Tiempo de ejecicion : " << duration.count() << "[us]" << std::endl;
         cv::Mat result;
         cv::cvtColor(mod_img, result, cv::COLOR_YCrCb2BGR);
 
@@ -75,7 +79,8 @@ int main(int argc, char* argv[]) {
 
         cout << "Valor gamma = " << g_gamma << endl;
         cv::imshow("Input Image", img);
-        cv::imshow("Result", result);
+        cv::imshow("Result", result);auto start = std::chrono::high_resolution_clock::now(); //Tiempo inicial
+
 
         cv::waitKey(0);
     }
@@ -111,8 +116,14 @@ int main(int argc, char* argv[]) {
                 roi = new cv::Mat(mod_buf, cv::Rect(0, 0, mod_buf.size().width, mod_buf.size().height));
             }
 
-            // implementa correccion gamma segun parametro m1 o m2
-            correccionGamma(*roi);
+						auto start = std::chrono::high_resolution_clock::now(); //Tiempo inicial
+		        // implementa correccion gamma segun parametro m1 o m2
+		        correccionGamma(*roi);
+						auto stop = std::chrono::high_resolution_clock::now(); //Tiempo final
+
+						// - Print de la diferencia de tiempo
+						auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+						std::cout << "Tiempo de ejecicion : " << duration.count() << "[us]" << std::endl;
 
             cv::Mat result;
             cv::cvtColor(mod_buf, result, cv::COLOR_YCrCb2BGR);
