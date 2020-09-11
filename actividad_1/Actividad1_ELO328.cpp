@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
             cerr << "Error reading image " << endl;
             return 1;
 					}
-					
+
         cv::Mat result;
         processImage(result, img);
 				duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
@@ -76,9 +76,10 @@ int main(int argc, char* argv[]) {
             cv::Mat result;
 						nFrames += 1;
             processImage(result, img);
+            duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
 						sumFrame += (double) duration.count();
 						avgFrame = (double) sumFrame/nFrames;
-						std::cout << "Tiempo Promedio por frame del modo "<< argv[1] << ":" << avgFrame << "[us]" << std::endl;
+            std::cout << "Tiempo Promedio por frame del modo "<< argv[1] << ":" << avgFrame << "[us]" << std::endl;
             cv::imshow("Video", img);
             cv::imshow("Modified video", result);
             if (cv::waitKey(10) != -1)
