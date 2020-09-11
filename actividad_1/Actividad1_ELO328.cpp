@@ -26,13 +26,15 @@ void table_creator();
 /* ------------------------------------------------------ */
 
 int main(int argc, char* argv[]) {
-    
+
 
     if (argv_manager(argc, argv) == 1) {
         return help();
     }
 
     if (proc_mode == P_MODE::IMAGE) {
+
+        cout << "Modo Imagen" << endl;
 
         if (img.empty()) {
             cerr << "Error reading image " << endl;
@@ -42,7 +44,7 @@ int main(int argc, char* argv[]) {
         cv::Mat mod_img;
         //img.copyTo(mod_img);
         cv::cvtColor(img, mod_img, cv::COLOR_BGR2YCrCb);
-        cv::Mat *roi;
+        cv::Mat* roi;
 
         //aqui seleccionamos una subseccion
         if (flag_f) {
@@ -51,18 +53,16 @@ int main(int argc, char* argv[]) {
         else {
             roi = new cv::Mat(mod_img, cv::Rect(0, 0, mod_img.size().width, mod_img.size().height));
         }
-        
+
         if (gamma_mode == G_MODE::M1) {
             table_creator();
         }
 
         // implementa correccion gamma segun parametro m1 o m2
         correccionGamma(*roi);
-               
+
         cv::Mat result;
         cv::cvtColor(mod_img, result, cv::COLOR_YCrCb2BGR);
-
-
 
         //dibujo de rectangulo
         if (flag_c) {
@@ -73,8 +73,6 @@ int main(int argc, char* argv[]) {
             cv::rectangle(result, cv::Point(x, y), cv::Point(x + w, y + h), cv::Scalar(0, 0, 0), 2);
         }
 
-
-
         cout << "Valor gamma = " << gamma << endl;
         cv::imshow("Input Image", img);
         cv::imshow("Result", result);
@@ -84,6 +82,56 @@ int main(int argc, char* argv[]) {
 
     else {
         cout << "Modo Video" << endl;
+
+        cv::VideoCapture vid;
+        vid.open(0);
+        if (!vid.isOpened()) {
+            cerr << "Error opening input." << endl;
+            return 1;
+        }
+
+        if (gamma_mode == G_MODE::M1) {
+            table_creator();
+        }
+
+        cv::Mat buf;
+        cv::Mat mod_buf;
+
+        while (1) {
+            vid >> buf;
+
+            cv::cvtColor(buf, mod_buf, cv::COLOR_BGR2YCrCb);
+            cv::Mat* roi;
+
+            //aqui seleccionamos una subseccion
+            if (flag_f) {
+                roi = new cv::Mat(mod_buf, cv::Rect(x, y, w, h));
+            }
+            else {
+                roi = new cv::Mat(mod_buf, cv::Rect(0, 0, mod_buf.size().width, mod_buf.size().height));
+            }
+
+            // implementa correccion gamma segun parametro m1 o m2
+            correccionGamma(*roi);
+
+            cv::Mat result;
+            cv::cvtColor(mod_buf, result, cv::COLOR_YCrCb2BGR);
+
+            //dibujo de rectangulo
+            if (flag_c) {
+                cv::rectangle(result, cv::Point(x, y), cv::Point(x + w, y + h), cv::Scalar(b, g, r), 2);
+            }
+            // rectangulo debe ser negro
+            else {
+                cv::rectangle(result, cv::Point(x, y), cv::Point(x + w, y + h), cv::Scalar(0, 0, 0), 2);
+            }
+
+            cv::imshow("Video", buf);
+            cv::imshow("Modified video", result);
+            if (cv::waitKey(10) != -1)
+                break;
+        }
+        vid.release();
     }
 
     return 0;
@@ -99,7 +147,7 @@ void correccionGamma(cv::Mat& img) {
     int channels = img.channels();
     int step = img.step;
     uchar* data = img.data;
-    
+
     if (gamma_mode == G_MODE::M1) {
         for (int i = 0; i < img.rows; i++) {
             for (int j = 0; j < img.cols; j++) {
@@ -122,7 +170,7 @@ void correccionGamma(cv::Mat& img) {
 
 void table_creator() {
     for (int i = 0; i <= 255; i++) {
-        table[i] = (uchar) (255.0 * pow(((double)i / 255.0), gamma));
+        table[i] = (uchar)(255.0 * pow(((double)i / 255.0), gamma));
     }
 }
 
