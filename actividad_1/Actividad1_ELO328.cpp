@@ -10,11 +10,11 @@ enum class P_MODE { IMAGE, VIDEO } proc_mode;
 enum class G_MODE { M1, M2 } gamma_mode;
 
 cv::Mat img;
-double gamma;
+double g_gamma;
 int x, y, w, h, r, g, b;
 
 int argv_manager(int argc, char* argv[]);   // Gestiona los argumentos a las variables
-int help();     // Imprime el menu de ayuda en caso de error en los argumentos 
+int help();     // Imprime el menu de ayuda en caso de error en los argumentos
 
 void correccionGamma(cv::Mat& img);
 
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
             cv::rectangle(result, cv::Point(x, y), cv::Point(x + w, y + h), cv::Scalar(0, 0, 0), 2);
         }
 
-        cout << "Valor gamma = " << gamma << endl;
+        cout << "Valor gamma = " << g_gamma << endl;
         cv::imshow("Input Image", img);
         cv::imshow("Result", result);
 
@@ -159,18 +159,18 @@ void correccionGamma(cv::Mat& img) {
     else {
         for (int i = 0; i < img.rows; i++) {
             for (int j = 0; j < img.cols; j++) {
-                data[i * step + j * channels] = 255.0 * pow((double)(data[i * step + j * channels] / 255.0), gamma);
+                data[i * step + j * channels] = 255.0 * pow((double)(data[i * step + j * channels] / 255.0), g_gamma);
             }
         }
     }
-    std::cout << gamma;
+    //std::cout << g_gamma;
     //img_ch[0] += 10* gamma;         // esto es para probar solamente
     //cv::merge(img_ch, img);
 }
 
 void table_creator() {
     for (int i = 0; i <= 255; i++) {
-        table[i] = (uchar)(255.0 * pow(((double)i / 255.0), gamma));
+        table[i] = (uchar)(255.0 * pow(((double)i / 255.0), g_gamma));
     }
 }
 
@@ -196,19 +196,19 @@ int argv_manager(int argc, char* argv[]) {
             proc_mode = P_MODE::IMAGE;
             if (argc >= 5) {
                 img = cv::imread(argv[i + 1], 1);
-                gamma = std::stod(argv[i + 2]);
+                g_gamma = std::stod(argv[i + 2]);
             }
             i += 2;
-            assert(gamma >= 0);
+            assert(g_gamma >= 0);
             continue;
         }
         if (strcmp(argv[i], "-v") == 0) {
             proc_mode = P_MODE::VIDEO;
             if (argc >= 4) {
-                gamma = std::stod(argv[i + 1]);
+                g_gamma = std::stod(argv[i + 1]);
             }
             i++;
-            assert(gamma >= 0);
+            assert(g_gamma >= 0);
             continue;
         }
         if (strcmp(argv[i], "-f") == 0) {
