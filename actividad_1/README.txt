@@ -1,16 +1,16 @@
-# Actividad 1 - ELO328 - 2020/2 
+# Actividad 1 - ELO328 - 2020/2
 
-Nombres: 
+Nombres:
 
 Mauricio Aravena
 Diego Badillo
-Steev González
-Sebastián Neira
+Steev Gonzï¿½lez
+Sebastiï¿½n Neira
 Felipe Villenas
 
 ## Notas
 
-Para una sección de 200x200 pixeles, se calcula el promedio de los tiempos
+Para una secciï¿½n de 200x200 pixeles, se calcula el promedio de los tiempos
 obtenidos por los cinco integrantes.
 
 imagen:
@@ -21,11 +21,11 @@ video:
 m1 164[us]
 m2 2861[us]
 
-## Compilación
+## Compilaciï¿½n
 
-Use 
+Use
 
-g++ -o GAMMA Actividad1_ELO328.cpp pkg-config --cflags --libs opencv4
+g++ -o GAMMA Actividad1_ELO328.cpp `pkg-config --cflags --libs opencv4`
 
 
 ## Uso
@@ -40,14 +40,10 @@ Para ejecutar el archivo creado, use
 	-i:    usar imagen.
 	image: Ruta de imagen a procesar.
 	gamma: Nivel de Gamma. Debe ser un valor real, mayor que 0.
-	-f:    (Optional) Define área a la que aplica gamma. Resto es borde.
-			  Se define rect ángulo posicion (x,y) y tamaño w X h.
+	-f:    (Optional) Define ï¿½rea a la que aplica gamma. Resto es borde.
+			  Se define rect ï¿½ngulo posicion (x,y) y tamaï¿½o w X h.
                           Si no se define, se usa imagen completa.
 	-c:    (Optional) Color (r,g,b) del borde. Si no se define,
 			  se usa negro.
 
 ```
-
-
-
-

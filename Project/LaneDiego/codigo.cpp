@@ -117,8 +117,8 @@ int main(int argc, char* argv[]) {
     }
 }
 
-       
-    
+
+
 
 
 
@@ -142,7 +142,7 @@ void processImage(cv::Mat& dst, cv::Mat& src) {
 
 
     //cv::Mat* roi;
-   
+
 }
 /*void correccionGamma(cv::Mat& img) {
 
@@ -196,3 +196,4 @@ cv::Mat sobelGradient(cv::Mat src) {
 
 
     return m8u;
+}
