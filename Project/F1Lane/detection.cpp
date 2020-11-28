@@ -46,6 +46,9 @@ int main(int argc, char const *argv[]) {
 	cv::imshow("entrada",srcImg);
 	cv::imshow("salida",crop);
 	cv::waitKey(0);
+	//Se almacena resultado en disco
+	// -> Falta cortar o remover padding en imagen de salida
+	cv::imwrite("hamilton.png", crop);
 
 	return 0;
 }
