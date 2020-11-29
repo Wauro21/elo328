@@ -33,7 +33,6 @@ def getRaceValues(name):
     #Extraer valores desde archivo
     for i in file:
         i = i.strip().split(",")
-        print(i)
         x.append(float(i[0]))
         y.append(float(i[1]))
         z.append(float(i[2]))
