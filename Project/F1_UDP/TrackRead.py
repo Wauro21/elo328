@@ -42,21 +42,23 @@ def getRaceValues(name):
     file.close()
     return retDict
 
+def plotFromArray(trackArray, raceValues, realTimeFlag):
+    #Reading the data
+    centerline = getValuesTrack(trackArray[0])
+    innerLimit = getValuesTrack(trackArray[1])
+    outerLimit = getValuesTrack(trackArray[2])
+    if(len(raceValues) != 0):
+        racingLine = getRaceValues(raceValues)
+        plt.plot(racingLine["z"],racingLine["x"], 'r--', label = "Línea carrera")
+    #Plotting the track
+    plt.plot(centerline["z"],centerline["x"],'k-', label = "Línea central")
+    plt.plot(innerLimit["z"],innerLimit["x"],'b-', label = "Límite interno")
+    plt.plot(outerLimit["z"],outerLimit["x"], 'g-', label = 'Límite externo')
+    plt.legend()
+    plt.show()
 
-#innerBoundaries = getValuesTrack("silverstone_2020_inner_boundaries")
-centerline = getValuesTrack("silverstone_2020_centerline")
-innerLimit = getValuesTrack("silverstone_2020_innerlimit")
-outerLimit = getValuesTrack("silverstone_2020_outerlimit")
-racingLine = getValuesTrack("silverstone_2020_racingline")
-#plt.plot(centerline["z"],centerline["x"],'k-', label = "Línea central")
-#plt.plot(innerBoundaries["x"],innerBoundaries["z"])
-plt.plot(innerLimit["z"],innerLimit["x"],'b-', label = "Límite interno")
-plt.plot(outerLimit["z"],outerLimit["x"], 'g-', label = 'Límite externo')
-#plt.plot(racingLine["z"],racingLine["x"], 'r--', label = "Línea carrera")
+def silverstoneDefault(raceValues):
+    trackArray = ["silverstone_2020_centerline","silverstone_2020_innerlimit", "silverstone_2020_outerlimit"]
+    plotFromArray(trackArray, raceValues, 0)
 
-#Prueba de concepto
-testRace = getRaceValues("testing")
-plt.plot(testRace["x"],testRace["z"],'m--', label = "Testing")
-
-plt.legend()
-plt.show()
+silverstoneDefault('')
