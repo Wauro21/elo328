@@ -26,26 +26,28 @@ class motionPacket(ctypes.LittleEndianStructure):
 
     ]
 
-print("UDP - Reading")
+#Funcion escucha puerto 20777
+def listenUDP(ip, outFile):
+    if(len(outFile) == 0 ):
+        outFile = "hamilton"
+    file = open(outFile+".csv", "w")
+    UDP_IP = ip
+    UDP_PORT = 20777
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.bind((UDP_IP, UDP_PORT))
+    print("UDP - Reading")
+    file.write("UDP - Reading \n")
+    while True:
+        try:
+            data, addr = sock.recvfrom(2048)
+            if(len(data) == 1341): #Tamano motion packet
+                damn = packetHeader.from_buffer_copy(data[0:headerSize+1])
+                damn_2 = motionPacket.from_buffer_copy(data[headerSize:mPacketSize+1])
+                print("{},{},{}".format(damn_2.m_worldPositionX,damn_2.m_worldPositionY,damn_2.m_worldPositionZ))
+                file.write("{},{},{} \n".format(damn_2.m_worldPositionX,damn_2.m_worldPositionY,damn_2.m_worldPositionZ))
+        except KeyboardInterrupt:
+            break
+    sock.close()
+    file.close()
 
-UDP_IP = "255.255.255.255" #loopback
-UDP_PORT = 20777 # Puerto defecto F1 - 2018
-
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-sock.bind((UDP_IP, UDP_PORT))
-
-
-# 1) Seleccionar packet UDP de interes:
-# 2) Desempaquetar informacion importante
-# 3) Guardar la informacion en un archivo .csv (Verificar)
-# 4) Forma de terminar la lectura UDP de forma sana
-
-# Llega el LSB primero, de todo numero
-
-while True:
-    data, addr = sock.recvfrom(2048)
-    if(len(data) == 1341): #Tamano motion packet
-        damn = packetHeader.from_buffer_copy(data[0:headerSize+1])
-        damn_2 = motionPacket.from_buffer_copy(data[headerSize:mPacketSize+1])
-        print("{},{},{}".format(damn_2.m_worldPositionX,damn_2.m_worldPositionY,damn_2.m_worldPositionZ))
+#listenUDP("255.255.255.255","")
