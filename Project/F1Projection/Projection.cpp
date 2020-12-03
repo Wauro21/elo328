@@ -22,18 +22,18 @@ cv::Mat projection(cv::Mat in, int save);
 cv::Mat kMeans(cv::Mat in, int n);
 cv::Mat gammaCorrection(cv::Mat in, double g_gamma);
 
-int main(int argc, char const* argv[]) 
+int main(int argc, char const* argv[])
 {
 	//Temporal, lectura archivo estatico
-	cv::Mat img = cv::imread("4.png");
-	cv::Mat crop = projection(img, 0);
+	cv::Mat img = cv::imread("test_3.png");
+	cv::Mat crop = projection(img, 1);
 
-	
+
 	vector<cv::Mat> bgr_planes;
 	cv::split(crop, bgr_planes);
 	cv::Mat segmented = bgr_planes[0];
-	
-	
+
+
 	for (int i = 0; i < segmented.rows; i++) {
 		for (int j = 0; j < segmented.cols; j++) {
 			if (segmented.at<uchar>(i, j) < 40) {
@@ -53,12 +53,12 @@ int main(int argc, char const* argv[])
 	cv::imshow("segmented", segmented);
 
 	cv::waitKey(0);
-	
+
 	return 0;
 }
 
 cv::Mat projection(cv::Mat in, int save)
-{	
+{
 	int height = in.rows;
 	int width = in.cols;
 
@@ -79,7 +79,7 @@ cv::Mat projection(cv::Mat in, int save)
 	return out;
 }
 
-cv::Mat kMeans(cv::Mat in, int n) 
+cv::Mat kMeans(cv::Mat in, int n)
 {
 	cv::Mat samples(in.rows * in.cols, in.channels(), CV_32F);
 	for (int i = 0; i < in.rows; i++) {

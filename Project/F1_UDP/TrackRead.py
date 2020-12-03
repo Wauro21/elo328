@@ -59,6 +59,8 @@ def plotFromArray(trackArray, raceValues, realTimeFlag, raceLineFlag):
     if(raceLineFlag):
         plt.plot(raceLine["x"],raceLine["z"],'m-', label = "Línea Carrera")
     plt.legend()
+    plt.ylim(-380, -350)
+    plt.xlim(190, 220)
     plt.show()
     retArray = [centerline, innerLimit, outerLimit, raceLine, racingLine] if (len(raceValues)!=0) else [centerline, innerLimit, outerLimit, raceLine]
     return retArray
