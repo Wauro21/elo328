@@ -21,44 +21,58 @@ using namespace cv;
 cv::Mat projection(cv::Mat in, int save);
 cv::Mat kMeans(cv::Mat in, int n);
 cv::Mat gammaCorrection(cv::Mat in, double g_gamma);
+void drawLine(cv::Mat& src, int width);
+void opening(cv::Mat& src, cv::Mat& dst, int x, int y);
+void closing(cv::Mat& src, cv::Mat& dst, int x, int y);
 
-int main(int argc, char const* argv[])
+
+int main(int argc, char const* argv[]) 
 {
 	//Temporal, lectura archivo estatico
-	cv::Mat img = cv::imread("test_3.png");
-	cv::Mat crop = projection(img, 1);
+	cv::Mat img = cv::imread("6.png");
+	cv::Mat crop = projection(img, 0);
+	cv::Mat dstEdge;
+	cv::Canny(crop, dstEdge, 240, 10);
+	//cv::dilate(crop, crop, getStructuringElement(cv::MORPH_ELLIPSE, Size(2, 20)));
 
 
-	vector<cv::Mat> bgr_planes;
-	cv::split(crop, bgr_planes);
-	cv::Mat segmented = bgr_planes[0];
+	cv::Mat threshold;
+	cv::cvtColor(crop, threshold, cv::COLOR_BGR2GRAY);
+
+	
+	cv::adaptiveThreshold(threshold, threshold, 255,
+		cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY, 21, -11);
+
+	//eliminar lineas trapecio
+	drawLine(threshold, 7);
+	drawLine(dstEdge, 6);
+	cv::dilate(dstEdge, dstEdge, getStructuringElement(cv::MORPH_ELLIPSE, Size(3, 3)));
+
+	cv::Mat sum;
+	cv::add(threshold, dstEdge, sum);
+
+	cv::Mat morph;
+	opening(sum, morph, 3, 3);
+	closing(morph, morph, 5, 5);
+	//opening(morph, morph, 3, 3);
 
 
-	for (int i = 0; i < segmented.rows; i++) {
-		for (int j = 0; j < segmented.cols; j++) {
-			if (segmented.at<uchar>(i, j) < 40) {
-				segmented.at<uchar>(i, j) = 240;
-			}
-		}
-	}
-
-	cv::cvtColor(segmented, segmented, cv::COLOR_GRAY2BGR);
-	//cv::Mat gamma = gammaCorrection(segmented, 0.5);
-	segmented = kMeans(segmented, 3);
-	//cv::threshold(segmented, segmented, 100, 255, 0);
-
-	//cv::imshow("input", img);
+	//############### SHOW ##################
+	cv::imshow("detection", dstEdge);
 	cv::imshow("projection", crop);
-	//cv::imshow("gamma", gamma);
-	cv::imshow("segmented", segmented);
+	cv::imshow("threshold", threshold);
+	//cv::imshow("sum", sum);
+	cv::imshow("morph", morph);
+	//cv::imshow("weighted", weighted);
+
 
 	cv::waitKey(0);
-
+	
 	return 0;
 }
 
 cv::Mat projection(cv::Mat in, int save)
-{
+{	
 	int height = in.rows;
 	int width = in.cols;
 
@@ -79,7 +93,7 @@ cv::Mat projection(cv::Mat in, int save)
 	return out;
 }
 
-cv::Mat kMeans(cv::Mat in, int n)
+cv::Mat kMeans(cv::Mat in, int n) 
 {
 	cv::Mat samples(in.rows * in.cols, in.channels(), CV_32F);
 	for (int i = 0; i < in.rows; i++) {
@@ -125,4 +139,24 @@ cv::Mat gammaCorrection(cv::Mat in, double g_gamma)
 	}
 	cv::cvtColor(img, img, cv::COLOR_YCrCb2BGR);
 	return img;
+}
+
+void drawLine(cv::Mat& src, int width)
+{
+	cv::line(src, cv::Point(0.4577 * src.cols, src.rows),
+		cv::Point(0, 0), Scalar(0, 0, 0), width);
+	cv::line(src, cv::Point(0.5464 * src.cols, src.rows),
+		cv::Point(0.9856 * src.cols, 0), Scalar(0, 0, 0), width);
+}
+
+void opening(cv::Mat& src, cv::Mat& dst, int x, int y)
+{
+	cv::erode(src, dst, getStructuringElement(cv::MORPH_ELLIPSE, Size(x, y)));
+	cv::dilate(dst, dst, getStructuringElement(cv::MORPH_ELLIPSE, Size(x, y)));
+}
+
+void closing(cv::Mat& src, cv::Mat& dst, int x, int y)
+{
+	cv::dilate(src, dst, getStructuringElement(cv::MORPH_ELLIPSE, Size(x, y)));
+	cv::erode(dst, dst, getStructuringElement(cv::MORPH_ELLIPSE, Size(x, y)));
 }
