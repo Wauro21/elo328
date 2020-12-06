@@ -29,5 +29,7 @@ void opening(cv::Mat& src, cv::Mat& dst, int x, int y);
 // apertura morfologica
 void closing(cv::Mat& src, cv::Mat& dst, int x, int y);
 // cierre morfologico
+void hideWheels(cv::Mat& src);
+// oculta ruedas
 
 #endif /* SEGFUNCTIONS_H */

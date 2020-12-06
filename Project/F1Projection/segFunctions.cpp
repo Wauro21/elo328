@@ -90,3 +90,14 @@ void closing(cv::Mat& src, cv::Mat& dst, int x, int y)
 	cv::dilate(src, dst, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(x, y)));
 	cv::erode(dst, dst, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(x, y)));
 }
+
+void hideWheels(cv::Mat& src)
+{
+	cv::rectangle(
+		src,
+		cv::Point(0.47 * src.cols, 0.94 * src.rows),
+		cv::Point(0.53 * src.cols, src.rows),
+		cv::Scalar(0, 0, 0),
+		-1
+	);
+}
