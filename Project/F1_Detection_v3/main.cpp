@@ -42,8 +42,8 @@ int main()
 
 	std::cout << xL << "," << xR << std::endl;
 
-	std::vector<double> p1 = detectLine(X, xL, 0.2 * X.cols, 0.2 * X.rows);  // p[2]*x^2 + p[1]*x + p[0]
-	std::vector<double> p2 = detectLine(X, xR);
+	std::vector<double> p1 = detectLine(X, xL, 0.1 * X.cols, 0.1 * X.rows);  // p[2]*x^2 + p[1]*x + p[0]
+	std::vector<double> p2 = detectLine(X, xR, 0.1 * X.cols, 0.1 * X.rows);
 
 	std::cout << p1[0] << "," << p1[1] << "," << p1[2] << std::endl;
 	std::cout << p2[0] << "," << p2[1] << "," << p2[2] << std::endl;
