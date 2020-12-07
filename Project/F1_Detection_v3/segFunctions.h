@@ -17,8 +17,10 @@
 
 #define ATTEMPTS 1
 
-cv::Mat projection(cv::Mat in, int save);
+cv::Mat projection(cv::Mat in, cv::Mat& invMatrix, int save = 0);
 // genera proyeccion geometrica en perspectiva "bird's eye"
+cv::Mat invProjection(cv::Mat in, cv::Mat invMatrix, int save = 0);
+// genera proyeccion inversa
 cv::Mat kMeans(cv::Mat in, int n);
 // segmenta imagen mediante algoritmo de k means (prueba)
 cv::Mat gammaCorrection(cv::Mat in, double g_gamma);
@@ -31,5 +33,7 @@ void closing(cv::Mat& src, cv::Mat& dst, int x, int y);
 // cierre morfologico
 void hideWheels(cv::Mat& src);
 // oculta ruedas
+void addMask(cv::Mat src, double alpha, cv::Mat& ROI, double beta);
+// solo funciona para 1080p (por mientras)
 
 #endif /* SEGFUNCTIONS_H */

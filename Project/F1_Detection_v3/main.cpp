@@ -13,8 +13,10 @@
 int main() 
 {
 	cv::Mat img = cv::imread("6.png");
-	cv::Mat crop = projection(img, 0);
-	
+	cv::Mat img2 = img.clone();
+	cv::Mat invMatrix;
+	cv::Mat crop = projection(img, invMatrix);
+
 	//test: aplicar morfologia antes de segmentar para lograr uniformidad en el asfalto
 	cv::Mat test;
 	cv::Mat testCanny;
@@ -61,12 +63,21 @@ int main()
 	cv::polylines(lines, leftLane, 0, cv::Scalar(0, 255, 255), 4);
 	cv::polylines(lines, rightLane, 0, cv::Scalar(0, 255, 255), 4);
 
+	// proyeccion inversa
+
+	cv::Mat comeback = invProjection(lines, invMatrix, 1);
 
 	//############### SHOW ##################
 	//cv::imshow("Lines", lines);
 
 	cv::addWeighted(X_color, 0.4, lines, 0.6, 0, X_color);
-	cv::imshow("Add", X_color);
+	//cv::imshow("Add", X_color);
+	//cv::imshow("comeback", comeback);
+	//cv::imshow("input", img2);
+
+	addMask(img2, 1, comeback, 0.3);
+	cv::imshow("final", comeback);
+	cv::imwrite("final_detection.png", comeback);
 
 	cv::waitKey(0);
 	return 0;

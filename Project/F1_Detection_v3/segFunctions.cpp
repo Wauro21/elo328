@@ -1,25 +1,37 @@
 #include "segFunctions.h"
 
 
-cv::Mat projection(cv::Mat in, int save)
+cv::Mat projection(cv::Mat in, cv::Mat& invMatrix, int save)
 {
 	int height = in.rows;
 	int width = in.cols;
 
 	float hRoi = floor(0.24 * height);
-	float wRoi = 1.01 * width;
+	float wRoi = width;
 	float infL = wRoi / 2 - 0.046 * width;
 	float infR = wRoi / 2 + 0.046 * width;
 	float datasrc[8] = { 0, hRoi, wRoi, hRoi, 0, 0, wRoi, 0 };
 	float datadst[8] = { infL, hRoi, infR, hRoi, 0, 0, wRoi, 0 };
 	cv::Mat src = cv::Mat(4, 2, CV_32F, datasrc);
 	cv::Mat dst = cv::Mat(4, 2, CV_32F, datadst);
-	cv::Mat transformation = getPerspectiveTransform(src, dst);
+	cv::Mat transformation = cv::getPerspectiveTransform(src, dst);
+	invMatrix = cv::getPerspectiveTransform(dst, src);
 	cv::Mat out(in, cv::Rect(0, 0.37 * height, width, 0.24 * height));
 	cv::warpPerspective(out, out, transformation, cv::Size(wRoi, hRoi));
 	cv::resize(out, out, cv::Size(out.cols / 2, out.rows * 2.5));
+
 	if (save)
 		cv::imwrite("projection.png", out);
+	return out;
+}
+
+cv::Mat invProjection(cv::Mat in, cv::Mat invMatrix, int save)
+{
+	cv::Mat out;
+	cv::resize(in, out, cv::Size(in.cols * 2, in.rows * 0.4));
+	cv::warpPerspective(out, out, invMatrix, cv::Size(out.cols, out.rows));
+	if (save)
+		cv::imwrite("inv_projection.png", out);
 	return out;
 }
 
@@ -75,8 +87,8 @@ void drawLine(cv::Mat& src, int width)
 {
 	cv::line(src, cv::Point(0.4577 * src.cols, src.rows),
 		cv::Point(0, 0), cv::Scalar(0, 0, 0), width);
-	cv::line(src, cv::Point(0.5464 * src.cols, src.rows),
-		cv::Point(0.9856 * src.cols, 0), cv::Scalar(0, 0, 0), width);
+	cv::line(src, cv::Point(0.547 * src.cols, src.rows),
+		cv::Point(src.cols, 0), cv::Scalar(0, 0, 0), width);
 }
 
 void opening(cv::Mat& src, cv::Mat& dst, int x, int y)
@@ -96,8 +108,19 @@ void hideWheels(cv::Mat& src)
 	cv::rectangle(
 		src,
 		cv::Point(0.47 * src.cols, 0.94 * src.rows),
-		cv::Point(0.53 * src.cols, src.rows),
+		cv::Point(0.54 * src.cols, src.rows),
 		cv::Scalar(0, 0, 0),
 		-1
 	);
+}
+
+void addMask(cv::Mat src, double alpha, cv::Mat& ROI, double beta)
+{
+	cv::copyMakeBorder(
+		ROI, ROI,
+		397, 425, 0, 0,
+		cv::BORDER_CONSTANT,
+		cv::Scalar(0, 0, 0)
+	);
+	cv::addWeighted(src, alpha, ROI, beta, 0, ROI);
 }
