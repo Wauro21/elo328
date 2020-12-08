@@ -38,5 +38,10 @@ void polyEval(
  * Evalua el polinomio 'p', y genera los vectores 'L' (linea izq.), 'R' (linea der.), y el 'area' de la pista
  */
 
+cv::Mat getMask(cv::Mat X);
+/*
+ * Obtiene mascara a partir de imagen con bordes segmentados
+ */
+
 
 #endif /* LANEDETECTION_H */

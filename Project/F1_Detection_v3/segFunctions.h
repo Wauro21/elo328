@@ -35,5 +35,7 @@ void hideWheels(cv::Mat& src);
 // oculta ruedas
 void addMask(cv::Mat src, double alpha, cv::Mat& ROI, double beta);
 // solo funciona para 1080p (por mientras)
+cv::Mat getEdges(cv::Mat crop);
+// obtiene bordes de la imagen
 
 #endif /* SEGFUNCTIONS_H */

@@ -124,3 +124,20 @@ void addMask(cv::Mat src, double alpha, cv::Mat& ROI, double beta)
 	);
 	cv::addWeighted(src, alpha, ROI, beta, 0, ROI);
 }
+
+
+cv::Mat getEdges(cv::Mat crop)
+{
+	//test: aplicar morfologia antes de segmentar para lograr uniformidad en el asfalto
+	cv::Mat test;
+	cv::Mat testCanny;
+	opening(crop, test, 5, 8);
+	cv::cvtColor(test, test, cv::COLOR_BGR2GRAY);
+
+	cv::Canny(test, testCanny, 150, 40);
+	drawLine(testCanny, 7);
+	hideWheels(testCanny);
+	cv::dilate(testCanny, testCanny, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
+
+	return testCanny;
+}

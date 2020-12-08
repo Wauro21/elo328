@@ -114,3 +114,30 @@ void polyEval(int size_x, std::vector<cv::Point>& L, std::vector<cv::Point>& R, 
 	}
 
 }
+
+cv::Mat getMask(cv::Mat X)
+{
+	int xL = 0;
+	int xR = 0;
+
+	calculateHistogram(X, &xL, &xR);
+
+	std::cout << xL << "," << xR << std::endl;
+
+	std::vector<double> p1 = detectLine(X, xL, 0.1 * X.cols, 0.1 * X.rows);  // p[2]*x^2 + p[1]*x + p[0]
+	std::vector<double> p2 = detectLine(X, xR, 0.1 * X.cols, 0.1 * X.rows);
+
+	std::cout << p1[0] << "," << p1[1] << "," << p1[2] << std::endl;
+	std::cout << p2[0] << "," << p2[1] << "," << p2[2] << std::endl;
+
+	std::vector<cv::Point> leftLane, rightLane;
+	std::vector<cv::Point> laneArea;
+
+	polyEval(X.rows, leftLane, rightLane, laneArea, p1, p2);
+
+	cv::Mat lines(X.rows, X.cols, CV_8UC3, cv::Scalar(0));
+	cv::fillPoly(lines, laneArea, cv::Scalar(0, 200, 0));
+	cv::polylines(lines, leftLane, 0, cv::Scalar(0, 255, 255), 4);
+	cv::polylines(lines, rightLane, 0, cv::Scalar(0, 255, 255), 4);
+	return lines;
+}
