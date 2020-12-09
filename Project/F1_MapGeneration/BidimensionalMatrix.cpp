@@ -55,3 +55,11 @@ void BidimensionalMatrix::vec2mat(readVector input){
 	}
 	std::cout << "Matriz de " << this->size << " elementos, " << "2x" << input.size() << std::endl;
 }
+
+//Destructor
+BidimensionalMatrix::~BidimensionalMatrix(){
+	(this->X)->clear();
+	(this->Y)->clear();
+	this->X = NULL;
+	this->Y = NULL;
+}

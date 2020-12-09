@@ -22,6 +22,9 @@ class BidimensionalMatrix{
 		// Vector of vector to Matrix
 		void vec2mat(readVector input);
 
+		//Destructor
+		~BidimensionalMatrix();
+
 	private:
 		std::vector<float>* X;
 		std::vector<float>* Y;
