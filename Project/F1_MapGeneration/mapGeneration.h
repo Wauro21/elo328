@@ -7,10 +7,22 @@
 #include <vector>
 #include <iomanip>
 #include "matplotlibcpp.h"
+#include "BidimensionalMatrix.h"
+#define SILVERPATH "silverstone/"
+//Definicion de datatype para conveniencia
+typedef std::vector<std::vector<float>> readVector;
+//DEFINES
+
+
 // Leer archivos
-std::vector<std::vector<float>> readFile(std::string nameFile, int nSkip, int nCols, bool* indexes);
+readVector readFile(std::string nameFile, int nSkip, int nCols, bool* indexes);
 
 // Print del vector resultante
-void printVector(std::vector<std::vector<float>>toPrint);
+void printVector(readVector toPrint);
 
+// Plot silverstone
+void plotSilverstone();
+
+// Plot generico
+void plotXZ(readVector input);
 #endif

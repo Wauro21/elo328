@@ -1,12 +1,13 @@
 #include "mapGeneration.h"
+namespace plt = matplotlibcpp;
 // Leer archivo
-std::vector<std::vector<float>> readFile(std::string nameFile, int nSkip, int nCols, bool* indexes){
+readVector readFile(std::string nameFile, int nSkip, int nCols, bool* indexes){
 	std::fstream file;
 	std::string tempLine = "ERROR";
 	char formater = ' ';
 	std::vector<std::vector<float>> retorno;
-	try{
-		file.open(nameFile);
+	file.open(nameFile);
+	if(file.is_open()){
 		for(int i = 0; i < nSkip; i++){
 			getline(file,tempLine);      // Saltar linea de descripcion
 		}
@@ -29,26 +30,51 @@ std::vector<std::vector<float>> readFile(std::string nameFile, int nSkip, int nC
 					}
 				}
 			}
-			retorno.push_back(tempVector);
+			if(tempVector.size() != 0){
+				retorno.push_back(tempVector);
+			}
 		}
+		file.close();
 	}
-	catch (const std::ifstream::failure& e){
-		std::cout << "¡Archivo no encontrado!" << std::endl;
+	else{
+		std::cout << "¡Archivo " << nameFile << " no encontrado!" << std::endl;
 	}
 	return retorno;
 }
 
-void printVector(std::vector<std::vector<float>> toPrint){
+void printVector(readVector toPrint){
 	std::cout << std::fixed;
 	std::cout << std::setprecision(13);
-	 for (int i = 0; i < toPrint.size(); i++) {
-		for (int j = 0; j < toPrint[i].size(); j++){
+	 for (unsigned int i = 0; i < toPrint.size(); i++) {
+		for (unsigned int j = 0; j < toPrint[i].size(); j++){
 			std::cout << toPrint[i][j] << '\t';
 		}
 		std::cout << std::endl;
 	}
+	std::cout << "debug " << toPrint.size() << std::endl;
 }
 
 // Plotear
 
-void 
+void plotXZ(readVector input){
+	BidimensionalMatrix test(input);
+	plt::plot(test.getX(), test.getY());
+}
+
+// - Defecto silverstone
+
+void plotSilverstone(){
+	// Nombres archivos
+	std::string trackArray[] = {"silverstone_2020_centerline.track","silverstone_2020_innerlimit.track", "silverstone_2020_outerlimit.track","silverstone_2020_racingline.track"};
+	bool selCols[] = {false, true, true, false, false, false};
+	//Valores de pista
+	readVector centerline = readFile(SILVERPATH+trackArray[0],2,6,selCols);
+	readVector innerLimit = readFile(SILVERPATH+trackArray[1],2,6,selCols);
+	readVector outerLimit = readFile(SILVERPATH+trackArray[2],2,6,selCols);
+	readVector raceLine   = readFile(SILVERPATH+trackArray[3],2,6,selCols);
+	plotXZ(centerline);
+	plotXZ(innerLimit);
+	plotXZ(outerLimit);
+	plotXZ(raceLine);
+	plt::show();
+}

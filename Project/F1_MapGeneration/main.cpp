@@ -1,10 +1,14 @@
 #include "mapGeneration.h"
+#include "BidimensionalMatrix.h"
 #include <iostream>
 #include <vector>
+
+
 int main(){
-	bool test[] = {true,false,true};
-	std::vector<std::vector<float>> retorno = readFile("test2.csv", 2, 3,test);
-	printVector(retorno);
+	bool test[] = {true,true};
+	BidimensionalMatrix retorno(readFile("test.csv", 2, 2,test));
+	plotSilverstone();
+
 	return 0;
 
 }
