@@ -23,11 +23,17 @@ class motionPacket(ctypes.LittleEndianStructure):
     _fields_ = [    ("m_worldPositionX", ctypes.c_float),
                     ("m_worldPositionY", ctypes.c_float),
                     ("m_worldPositionZ", ctypes.c_float),
+                    ("m_wordlVelocityX", ctypes.c_float),
+                    ("m_wordlVelocityY", ctypes.c_float),
+                    ("m_wordlVelocityZ", ctypes.c_float),
+                    ("m_worldFowardDirX", ctypes.c_int16,16),
+                    ("m_worldFowardDirY", ctypes.c_int16,16),
+                    ("m_worldFowardDirZ", ctypes.c_int16,16),
 
     ]
 
 #Funcion escucha puerto 20777
-def listenUDP(ip, outFile):
+def listenUDP(ip, outFile, dirFlag):
     if(len(outFile) == 0 ):
         outFile = "hamilton"
     file = open(outFile+".csv", "w")
@@ -43,8 +49,12 @@ def listenUDP(ip, outFile):
             if(len(data) == 1341): #Tamano motion packet
                 damn = packetHeader.from_buffer_copy(data[0:headerSize+1])
                 damn_2 = motionPacket.from_buffer_copy(data[headerSize:mPacketSize+1])
-                print("{},{},{}".format(damn_2.m_worldPositionX,damn_2.m_worldPositionY,damn_2.m_worldPositionZ))
-                file.write("{},{},{} \n".format(damn_2.m_worldPositionX,damn_2.m_worldPositionY,damn_2.m_worldPositionZ))
+                if(dirFlag):
+                    toWrite = "{},{},{},{},{},{}".format(damn_2.m_worldPositionX,damn_2.m_worldPositionY,damn_2.m_worldPositionZ, damn_2.m_worldFowardDirX, damn_2.m_worldFowardDirY, damn_2.m_worldFowardDirZ)
+                else:
+                    toWrite = "{},{},{}".format(damn_2.m_worldPositionX,damn_2.m_worldPositionY,damn_2.m_worldPositionZ)
+                print(toWrite)
+                file.write(toWrite + "\n")
         except KeyboardInterrupt:
             break
     sock.close()
