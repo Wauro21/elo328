@@ -21,8 +21,8 @@ readVector readFile(std::string nameFile, int nSkip, int nCols, bool* indexes);
 void printVector(readVector toPrint);
 
 // Plot silverstone
-void plotSilverstone();
+void plotSilverstone(bool center, bool racingLine, std::string saveName);
 
 // Plot generico
-void plotXZ(readVector input);
+void plotXZ(readVector input, std::string name, std::string style);
 #endif

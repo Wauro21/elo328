@@ -7,8 +7,7 @@
 int main(){
 	bool test[] = {true,true};
 	BidimensionalMatrix retorno(readFile("test.csv", 2, 2,test));
-	plotSilverstone();
-
+	plotSilverstone(false, false, "test");
 	return 0;
 
 }
