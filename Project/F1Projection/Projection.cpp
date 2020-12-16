@@ -1,40 +1,49 @@
+#include "Projection.h"
 
-#include <cmath>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/types_c.h>
-#include <iostream>
-
-#include "segFunctions.h"
-
-
-int main() 
+cv::Mat projection(cv::Mat in, int save)
 {
-	cv::Mat img = cv::imread("1.png");
-	cv::Mat crop = projection(img, 0);
-	
-	//test: aplicar morfologia antes de segmentar para lograr uniformidad en el asfalto
-	cv::Mat test;
-	cv::Mat testCanny;
-	opening(crop, test, 5, 8);
-	cv::cvtColor(test, test, cv::COLOR_BGR2GRAY);
+	int height = in.rows;
+	int width = in.cols;
 
-	cv::Canny(test, testCanny, 150, 40);
-	drawLine(testCanny, 7);
-	hideWheels(testCanny);
-	cv::dilate(testCanny, testCanny, getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5)));
-
-	cv::imwrite("testCanny.png", testCanny);
-
-	//############### SHOW ##################
-	cv::imshow("projection", crop);
-	cv::imshow("testCanny", testCanny);
-	//cv::imshow("test", test);
-
-	cv::waitKey(0);
-	
-	return 0;
+	float hRoi = floor(0.24 * height);
+	float wRoi = 1.01 * width;
+	float infL = wRoi / 2 - 0.046 * width;
+	float infR = wRoi / 2 + 0.046 * width;
+	float datasrc[8] = { 0, hRoi, wRoi, hRoi, 0, 0, wRoi, 0 };
+	float datadst[8] = { infL, hRoi, infR, hRoi, 0, 0, wRoi, 0 };
+	cv::Mat src = cv::Mat(4, 2, CV_32F, datasrc);
+	cv::Mat dst = cv::Mat(4, 2, CV_32F, datadst);
+	cv::Mat transformation = getPerspectiveTransform(src, dst);
+	cv::Mat out(in, cv::Rect(0, 0.37 * height, width, 0.24 * height));
+	cv::warpPerspective(out, out, transformation, cv::Size(wRoi, hRoi));
+	cv::resize(out, out, cv::Size(out.cols / 2, out.rows * 2.5));
+	if (save)
+		cv::imwrite("projection.png", out);
+	return out;
 }
 
+cv::Mat kMeans(cv::Mat in, int n)
+{
+	cv::Mat samples(in.rows * in.cols, in.channels(), CV_32F);
+	for (int i = 0; i < in.rows; i++) {
+		for (int j = 0; j < in.cols; j++) {
+			for (int k = 0; k < in.channels(); k++) {
+				samples.at<float>(i + j * in.rows, k) = in.at<cv::Vec3b>(i, j)[k];
+			}
+		}
+	}
+	cv::Mat labels;
+	cv::Mat centers;
+	cv::kmeans(samples, n, labels, cv::TermCriteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 3, 5.), ATTEMPTS, cv::KMEANS_PP_CENTERS, centers);
+
+	cv::Mat newImg(in.size(), in.type());
+	for (int i = 0; i < in.rows; i++) {
+		for (int j = 0; j < in.cols; j++) {
+			int cluster_idx = labels.at<int>(i + j * in.rows, 0);
+			for (int k = 0; k < in.channels(); k++) {
+				newImg.at<cv::Vec3b>(i, j)[k] = centers.at<float>(cluster_idx, k);
+			}
+		}
+	}
+	return newImg;
+}

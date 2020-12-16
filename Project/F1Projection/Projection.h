@@ -1,5 +1,5 @@
-#ifndef SEGFUNCTIONS_H
-#define SEGFUNCTIONS_H
+#ifndef PROJECTION_H
+#define PROJECTION_H
 
 /*
  * Proyecto ELO328 - 2020.S2 - G1
@@ -21,13 +21,5 @@ cv::Mat projection(cv::Mat in, int save);
 // genera proyeccion geometrica en perspectiva "bird's eye"
 cv::Mat kMeans(cv::Mat in, int n);
 // segmenta imagen mediante algoritmo de k means (prueba)
-void drawLine(cv::Mat& src, int width);
-// elimina lineas del trapecio generado por la proyeccion
-void opening(cv::Mat& src, cv::Mat& dst, int x, int y);
-// apertura morfologica
-void closing(cv::Mat& src, cv::Mat& dst, int x, int y);
-// cierre morfologico
-void hideWheels(cv::Mat& src);
-// oculta ruedas
 
-#endif /* SEGFUNCTIONS_H */
+#endif /* PROJECTION_H */
