@@ -19,6 +19,8 @@
 
 cv::Mat projection(cv::Mat in, cv::Mat& invMatrix, int save = 0);
 // genera proyeccion geometrica en perspectiva "bird's eye"
+cv::Mat invProjection(cv::Mat in, cv::Mat invMatrix, int save = 0);
+// genera proyeccion inversa
 cv::Mat kMeans(cv::Mat in, int n);
 // segmenta imagen mediante algoritmo de k means (prueba)
 

@@ -23,6 +23,16 @@ cv::Mat projection(cv::Mat in, cv::Mat& invMatrix, int save)
 	return out;
 }
 
+cv::Mat invProjection(cv::Mat in, cv::Mat invMatrix, int save)
+{
+	cv::Mat out;
+	cv::resize(in, out, cv::Size(in.cols * 2, in.rows * 0.4));
+	cv::warpPerspective(out, out, invMatrix, cv::Size(out.cols, out.rows));
+	if (save)
+		cv::imwrite("inv_projection.png", out);
+	return out;
+}
+
 cv::Mat kMeans(cv::Mat in, int n)
 {
 	cv::Mat samples(in.rows * in.cols, in.channels(), CV_32F);
