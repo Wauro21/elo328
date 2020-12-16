@@ -4,11 +4,11 @@ import sys
 #Variables globales
 
 headerSize = 21 # en bytes
-mPacketSize = 60 # en bytes
+mPacketSize = 54 # en bytes
 #Clase para el desempaquetado del Header usando ctypes, littleEndian
 class packetHeader(ctypes.LittleEndianStructure):
     _pack_ = 1
-    _fields_ = [    ("m_packetFormat",ctypes.c_uint,16),
+    _fields_ = [    ("m_packetFormat",ctypes.c_uint16,16),
                     ("m_packetVersion",ctypes.c_uint8,8),
                     ("m_packetId",ctypes.c_uint8,8),
                     ("m_sessionUID",ctypes.c_uint64,64),
@@ -60,4 +60,4 @@ def listenUDP(ip, outFile, dirFlag):
     sock.close()
     file.close()
 
-#listenUDP("255.255.255.255","")
+listenUDP("255.255.255.255","",True)
