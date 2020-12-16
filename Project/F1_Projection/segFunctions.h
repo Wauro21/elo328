@@ -17,10 +17,6 @@
 
 #define ATTEMPTS 1
 
-cv::Mat projection(cv::Mat in, int save);
-// genera proyeccion geometrica en perspectiva "bird's eye"
-cv::Mat kMeans(cv::Mat in, int n);
-// segmenta imagen mediante algoritmo de k means (prueba)
 void drawLine(cv::Mat& src, int width);
 // elimina lineas del trapecio generado por la proyeccion
 void opening(cv::Mat& src, cv::Mat& dst, int x, int y);
