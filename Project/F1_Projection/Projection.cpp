@@ -1,6 +1,6 @@
 #include "Projection.h"
 
-cv::Mat projection(cv::Mat in, int save)
+cv::Mat projection(cv::Mat in, cv::Mat& invMatrix, int save)
 {
 	int height = in.rows;
 	int width = in.cols;
@@ -14,6 +14,7 @@ cv::Mat projection(cv::Mat in, int save)
 	cv::Mat src = cv::Mat(4, 2, CV_32F, datasrc);
 	cv::Mat dst = cv::Mat(4, 2, CV_32F, datadst);
 	cv::Mat transformation = getPerspectiveTransform(src, dst);
+	invMatrix = cv::getPerspectiveTransform(dst, src);
 	cv::Mat out(in, cv::Rect(0, 0.37 * height, width, 0.24 * height));
 	cv::warpPerspective(out, out, transformation, cv::Size(wRoi, hRoi));
 	cv::resize(out, out, cv::Size(out.cols / 2, out.rows * 2.5));
