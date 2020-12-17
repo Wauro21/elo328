@@ -8,11 +8,12 @@
 #include <iostream>
 
 #include "segFunctions.h"
+#include "Projection.h"
 #include "LaneDetection.h"
 
 int main() 
 {
-	int mode = 1; // 0 image, 1 video
+	int mode = 0; // 0 image, 1 video
 
 	if (!mode) {
 		cv::Mat img = cv::imread("4.png");
@@ -21,18 +22,17 @@ int main()
 		cv::Mat crop = projection(img, invMatrix);
 
 		cv::Mat X = getEdges(crop);
-		cv::imwrite("edges_segmentation.png", X);
-
+		//cv::imwrite("edges_segmentation.png", X);
 		//############### SHOW ##################
 		//cv::imshow("projection", crop);
 		//cv::imshow("edges_segmentation", X);
 
 		//################ MASK #################
 		cv::Mat lines = getMask(X);
-
+		
 		// proyeccion inversa
 		cv::Mat retrieval = invProjection(lines, invMatrix, 1);
-
+		
 		//############### SHOW ##################
 		//cv::imshow("Lines", lines);
 
@@ -68,14 +68,14 @@ int main()
 		//cv::VideoWriter out;
 		//out.open("out.mp4", ex, FPS, S, true);
 		
-		cv::VideoWriter out(
+		/*cv::VideoWriter out(
 			"out.mov", 
 			cv::VideoWriter::fourcc('m', 'p', '4', 'v'),
 			FPS,
 			S
 			);
 		
-		if (!out.isOpened()) std::exit(-1);
+		if (!out.isOpened()) std::exit(-1);*/
 
 		cv::Mat frame;
 
@@ -100,8 +100,8 @@ int main()
 			// se agrega mascara a imagen de entrada
 			addMask(img2, 1, retrieval, 0.3);
 			
-			out << retrieval;
-			
+			//out << retrieval;
+			cv::imshow("Video", retrieval);
 			if (cv::waitKey(1000.0 / FPS) == 27) break; //ESC key
 		}		
 	}

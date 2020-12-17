@@ -28,13 +28,11 @@ void calculateHistogram(cv::Mat& X, int* xL, int* xR) {
 	cv::Mat histoR(histo, cv::Rect(mid, 0, mid, 1));
 
 	/* El unico que se utiliza es 'max_index' */
-	double min, max;
 	cv::Point max_index;
-	cv::Point min_index;
 
-	cv::minMaxLoc(histoL, &min, &max, &min_index, &max_index);
+	cv::minMaxLoc(histoL, NULL, NULL, NULL, &max_index);
 	*xL = max_index.x;
-	cv::minMaxLoc(histoR, &min, &max, &min_index, &max_index);
+	cv::minMaxLoc(histoR, NULL, NULL, NULL, &max_index);
 	*xR = max_index.x + mid;
 }
 
@@ -50,6 +48,10 @@ std::vector<double> detectLine(cv::Mat& X, int x0, int w, int h) {
 	int w_begin = 0;
 	int w_end = 0;
 
+	int step = X.step;
+	int ch = X.channels();
+	uchar* img_data = X.data;
+
 	/* Vectores para ir guardando los datos */
 	std::vector<double>* dataX = new std::vector<double>;
 	std::vector<double>* dataY = new std::vector<double>;
@@ -59,7 +61,8 @@ std::vector<double> detectLine(cv::Mat& X, int x0, int w, int h) {
 		/* Comienza recorriendo la imagen desde abajo */
 		for (int i = rows - k * h; i < rows - (k - 1) * h; i++) {
 			for (int j = (int)(X0 - w / 2); j < (int)(X0 + w / 2); j++) {
-				if (X.at<uchar>(i, j) > 0) {
+				//if (X.at<uchar>(i, j) > 0) {
+				if(img_data[i*step + j*ch] > 0){
 					dataX->push_back(j);	// row == y coordinate, col == x coordinate
 					dataY->push_back(i);
 				}
@@ -91,7 +94,8 @@ std::vector<double> detectLine(cv::Mat& X, int x0, int w, int h) {
 	std::vector<double> poly_values;
 
 	PolynomialRegression<double> polyfit;
-	polyfit.fitIt(*dataY, *dataX, 2, poly_values);
+	if(!dataY->empty() && !dataX->empty())
+		polyfit.fitIt(*dataY, *dataX, 2, poly_values);
 
 	delete dataX;
 	delete dataY;
@@ -127,17 +131,20 @@ cv::Mat getMask(cv::Mat X)
 	std::vector<double> p1 = detectLine(X, xL, 0.1 * X.cols, 0.1 * X.rows);  // p[2]*x^2 + p[1]*x + p[0]
 	std::vector<double> p2 = detectLine(X, xR, 0.1 * X.cols, 0.1 * X.rows);
 
-	std::cout << p1[0] << "," << p1[1] << "," << p1[2] << std::endl;
-	std::cout << p2[0] << "," << p2[1] << "," << p2[2] << std::endl;
+	//std::cout << p1[0] << "," << p1[1] << "," << p1[2] << std::endl;
+	//std::cout << p2[0] << "," << p2[1] << "," << p2[2] << std::endl;
 
 	std::vector<cv::Point> leftLane, rightLane;
 	std::vector<cv::Point> laneArea;
 
-	polyEval(X.rows, leftLane, rightLane, laneArea, p1, p2);
-
 	cv::Mat lines(X.rows, X.cols, CV_8UC3, cv::Scalar(0));
-	cv::fillPoly(lines, laneArea, cv::Scalar(0, 200, 0));
-	cv::polylines(lines, leftLane, 0, cv::Scalar(0, 255, 255), 4);
-	cv::polylines(lines, rightLane, 0, cv::Scalar(0, 255, 255), 4);
+
+	if(!p1.empty() && !p2.empty()){
+		polyEval(X.rows, leftLane, rightLane, laneArea, p1, p2);	
+		cv::fillPoly(lines, laneArea, cv::Scalar(0, 200, 0));
+		cv::polylines(lines, leftLane, 0, cv::Scalar(0, 255, 255), 4);
+		cv::polylines(lines, rightLane, 0, cv::Scalar(0, 255, 255), 4);
+	}
+	
 	return lines;
 }
