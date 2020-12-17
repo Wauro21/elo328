@@ -120,7 +120,7 @@ void polyEval(int size_x, std::vector<cv::Point>& L, std::vector<cv::Point>& R, 
 
 }
 
-cv::Mat getMask(cv::Mat img)
+cv::Mat getMask(cv::Mat img, std::vector<double>& p1, std::vector<double>& p2)
 {
 	cv::Mat X = getEdges(img);
 	int xL = 0;
@@ -130,8 +130,10 @@ cv::Mat getMask(cv::Mat img)
 
 	std::cout << xL << "," << xR << std::endl;
 
-	std::vector<double> p1 = detectLine(X, xL, 0.1 * X.cols, 0.1 * X.rows);  // p[2]*x^2 + p[1]*x + p[0]
-	std::vector<double> p2 = detectLine(X, xR, 0.1 * X.cols, 0.1 * X.rows);
+	//std::vector<double> p1 = detectLine(X, xL, 0.1 * X.cols, 0.1 * X.rows);  // p[2]*x^2 + p[1]*x + p[0]
+	//std::vector<double> p2 = detectLine(X, xR, 0.1 * X.cols, 0.1 * X.rows);
+	p1 = detectLine(X, xL, 0.1 * X.cols, 0.1 * X.rows);
+	p2 = detectLine(X, xL, 0.1 * X.cols, 0.1 * X.rows);
 
 	//std::cout << p1[0] << "," << p1[1] << "," << p1[2] << std::endl;
 	//std::cout << p2[0] << "," << p2[1] << "," << p2[2] << std::endl;
