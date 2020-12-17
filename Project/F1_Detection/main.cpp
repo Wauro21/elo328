@@ -10,6 +10,7 @@
 #include "segFunctions.h"
 #include "Projection.h"
 #include "LaneDetection.h"
+#include "racingLine.h"
 
 int main() 
 {
@@ -22,19 +23,27 @@ int main()
 		cv::Mat crop = projection(img, invMatrix);
 
 		cv::Mat X = getEdges(crop);
-		//cv::imwrite("edges_segmentation.png", X);
+		cv::imwrite("edges_segmentation.png", X);
+
 		//############### SHOW ##################
 		//cv::imshow("projection", crop);
 		//cv::imshow("edges_segmentation", X);
 
 		//################ MASK #################
-		cv::Mat lines = getMask(X);
+		std::vector<double> pLeft, pRight;
+		cv::Mat lines = getMask(X, pLeft, pRight);
+		std::vector<double> distances = getDistances(X, pLeft, pRight);
 		
+		for (int i = 0; i < 10; i++) {
+			std::cout << "distance: " << distances[i] << std::endl;
+		}
+
 		// proyeccion inversa
 		cv::Mat retrieval = invProjection(lines, invMatrix, 1);
-		
+
 		//############### SHOW ##################
-		//cv::imshow("Lines", lines);
+		cv::imwrite("Lines.png", lines);
+		cv::imshow("Lines", lines);
 
 		/*
 		// obtiene suma ponderada entre los bordes segmentados y la mascara
@@ -68,14 +77,14 @@ int main()
 		//cv::VideoWriter out;
 		//out.open("out.mp4", ex, FPS, S, true);
 		
-		/*cv::VideoWriter out(
+		cv::VideoWriter out(
 			"out.mov", 
 			cv::VideoWriter::fourcc('m', 'p', '4', 'v'),
 			FPS,
 			S
 			);
 		
-		if (!out.isOpened()) std::exit(-1);*/
+		if (!out.isOpened()) std::exit(-1);
 
 		cv::Mat frame;
 
@@ -91,7 +100,10 @@ int main()
 			cv::Mat X = getEdges(crop);
 			
 			//################ MASK #################
-			cv::Mat lines = getMask(X);
+			std::vector<double> pLeft, pRight;
+			cv::Mat lines = getMask(X, pLeft, pRight);
+			std::cout << "p1left: " << pLeft[0] << "," << pLeft[1] << "," << pLeft[2] << std::endl;
+			std::cout << "p2right: " << pRight[0] << "," << pRight[1] << "," << pRight[2] << std::endl;
 			
 			
 			// proyeccion inversa
@@ -100,8 +112,8 @@ int main()
 			// se agrega mascara a imagen de entrada
 			addMask(img2, 1, retrieval, 0.3);
 			
-			//out << retrieval;
-			cv::imshow("Video", retrieval);
+			out << retrieval;
+			
 			if (cv::waitKey(1000.0 / FPS) == 27) break; //ESC key
 		}		
 	}
