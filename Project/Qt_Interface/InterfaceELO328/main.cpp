@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
 
-    w.setWindowTitle("F1 Trainning");
+    w.setWindowTitle("F1 Racing Line Trainning");
     w.setFixedSize(720, 480);
     w.setWindowIcon(QIcon("../InterfaceELO328/icon.jpg"));
 

@@ -17,6 +17,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     QString filename;
+    QString filenameUDP;
 
 private slots:
     void on_pushButton_clicked();
@@ -28,6 +29,8 @@ private slots:
     void on_actionAbout_this_project_triggered();
 
     void on_pushButton_2_clicked();
+
+    void on_pushButton_4_clicked();
 
 private:
     Ui::MainWindow *ui;

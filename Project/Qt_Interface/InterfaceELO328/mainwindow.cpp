@@ -68,3 +68,11 @@ void MainWindow::on_pushButton_2_clicked()
 
 
 }
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    filenameUDP = QFileDialog::getOpenFileName(
+                this, tr("Open File"), "../InterfaceELO328",
+                tr("Comma Separted Values (*.csv)"));
+    ui->lineEdit_2->setText(filenameUDP);
+}
