@@ -1,4 +1,5 @@
 #include "LaneDetection.h"
+#include "segFunctions.h"
 
 void calculateHistogram(cv::Mat& X, int* xL, int* xR) {
 
@@ -119,8 +120,9 @@ void polyEval(int size_x, std::vector<cv::Point>& L, std::vector<cv::Point>& R, 
 
 }
 
-cv::Mat getMask(cv::Mat X)
+cv::Mat getMask(cv::Mat img)
 {
+	cv::Mat X = getEdges(img);
 	int xL = 0;
 	int xR = 0;
 
