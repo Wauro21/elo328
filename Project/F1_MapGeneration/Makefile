@@ -1,6 +1,6 @@
 OUTPUT = TEST
 INPUT  = main.cpp
-DEPENDENCIES = mapGeneration.cpp BidimensionalMatrix.cpp
+DEPENDENCIES = Matrix.cpp mapGeneration.cpp
 default: build
 
 build:

@@ -1,29 +1,32 @@
-#ifndef BIDIMENSIONALMATRIX_H
-#define BIDIMENSIONALMATRIX_H
+#ifndef MATRIX_H
+#define MATRIX_H
 #include "mapGeneration.h"
 #include <vector>
 #include <iostream>
 typedef std::vector<std::vector<float>> readVector;
-class BidimensionalMatrix{
+class Matrix{
 	public:
 		//Constructor
-		BidimensionalMatrix();
-		BidimensionalMatrix(readVector input);
+		Matrix();
+		Matrix(readVector input);
 		//Setters
 		void setX(std::vector<float> xValues);
 		void setY(std::vector<float> yValues);
 		void addX(float);
 		void addY(float);
+		void setSize(int);
 		// Getters
-		std::vector<float> getX();
-		std::vector<float> getY();
+		std::vector<float>  getX();
+		std::vector<float>  getY();
+		std::vector<float>* getpX();
+		std::vector<float>* getpY();
 		int getSize();
 
 		// Vector of vector to Matrix
 		void vec2mat(readVector input);
 
 		//Destructor
-		~BidimensionalMatrix();
+		~Matrix();
 
 	private:
 		std::vector<float>* X;

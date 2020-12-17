@@ -6,8 +6,9 @@ readVector readFile(std::string nameFile, int nSkip, int nCols, bool* indexes){
 	std::fstream file;
 	std::string tempLine = "ERROR";
 	char formater = ' ';
-	std::vector<std::vector<float>> retorno;
+	readVector retorno;
 	file.open(nameFile);
+	std::cout << "AAA " << sizeof(indexes) << std::endl;
 	if(file.is_open()){
 		for(int i = 0; i < nSkip; i++){
 			getline(file,tempLine);      // Saltar linea de descripcion
@@ -55,10 +56,10 @@ void printVector(readVector toPrint){
 	}
 }
 
-// Plotear
+// Plotear - Wrapper
 
 
-void plotXZ(BidimensionalMatrix input, std::string name, std::string style){
+void plotXZ(Matrix input, std::string name, std::string style){
 	plt::named_plot(name, input.getX(), input.getY(), style);
 }
 
@@ -71,23 +72,76 @@ void plotSilverstone(bool center, bool racingLine, std::string saveName){
 	std::string trackArray[] = {"silverstone_2020_centerline.track","silverstone_2020_innerlimit.track", "silverstone_2020_outerlimit.track","silverstone_2020_racingline.track"};
 	bool selCols[] = {false, true, true, false, false, false};
 	//Valores de pista
-	BidimensionalMatrix centerline(readFile(SILVERPATH+trackArray[0],2,6,selCols));
-	BidimensionalMatrix innerLimit(readFile(SILVERPATH+trackArray[1],2,6,selCols));
-	BidimensionalMatrix outerLimit(readFile(SILVERPATH+trackArray[2],2,6,selCols));
-	BidimensionalMatrix raceLine(readFile(SILVERPATH+trackArray[3],2,6,selCols));
+	Matrix centerline(readFile(SILVERPATH+trackArray[0],2,6,selCols));
+	Matrix innerLimit(readFile(SILVERPATH+trackArray[1],2,6,selCols));
+	Matrix outerLimit(readFile(SILVERPATH+trackArray[2],2,6,selCols));
+	Matrix raceLine(readFile(SILVERPATH+trackArray[3],2,6,selCols));
+	//window
+	Matrix wCenterline = window(centerline,464.4882202 ,-559.611145, 300);
+	Matrix wInnerLimit = window(innerLimit,464.4882202 ,-559.611145, 300);
+	Matrix wOuterLimit = window(outerLimit,464.4882202 ,-559.611145, 300);
+	Matrix wRaceLine = window(raceLine,464.4882202 ,-559.611145, 300);
+	//rotation
+	rotation(wCenterline,(-26251/32767),(19610.23/32767));
+	rotation(wCenterline,(-26251/32767),(19610.23/32767));
+	rotation(wInnerLimit,(-26251/32767),(19610.23/32767));
+	rotation(wOuterLimit,(-26251/32767),(19610.23/32767));
+	rotation(wRaceLine,(-26251/32767),(19610.23/32767));
 	plt::figure_size(1920, 1080);
-	plotXZ(innerLimit, "innerLimit", "b-");
-	plotXZ(outerLimit, "outerLimit", "g-");
+	//TEMP
+	plotXZ(wInnerLimit, "innerLimit", "b-");
+	plotXZ(wOuterLimit, "outerLimit", "g-");
 	if(center){
-		plotXZ(centerline, "centerline", "k-");
+		plotXZ(wCenterline, "centerline", "k-");
 	}
 	if(racingLine){
-		plotXZ(raceLine, "racingLine", "m-");
+		plotXZ(wRaceLine, "racingLine", "m-");
 	}
 	plt::title("Pista: silverstone");
 	plt::legend();
-	plt::show();
 	if(saveName.length() != 0){
 		plt::save(saveName+".png");
 	}
+	plt::show();
+}
+
+// - Aplicar rotacion y traslacion
+void rotation(Matrix& input, float xVal, float zVal){
+	//Varibles primas
+	float xPrime = 0.0f;
+	float zPrime = 0.0f;
+	//Calculo de cos/sin desde vector de entrada
+	float hypot = sqrt(pow(xVal, 2) + pow(zVal, 2));
+	float a11 =  zVal/hypot;
+	float a12 = -xVal/hypot;
+	float a21 =  xVal/hypot;
+	float a22 =  zVal/hypot;
+	// Obtencion vectores de Matrix
+	std::vector<float>* Vx = input.getpX();
+	std::vector<float>* Vz = input.getpY();
+	for(int i = 0; i < input.getSize(); i++){
+		xPrime = Vx->at(i)*a11 + Vz->at(i)*a12;
+		zPrime = Vx->at(i)*a21 + Vz->at(i)*a22;
+		(*Vx)[i] = xPrime;
+		(*Vz)[i] = zPrime;
+	}
+}
+
+// - Seleccion de ventana dado punto
+Matrix window(Matrix& input, float xVal, float zVal, float epsilon){
+	Matrix retorno;
+	std::vector<float>* Vx = input.getpX();
+	std::vector<float>* Vz = input.getpY();
+	float distance = 0.0f;
+	std::cout << "xSize"  << Vx->size() << " ySize" << Vz->size() << std::endl;
+	for(unsigned int i = 0; i < Vx->size(); i++){
+		distance = pow(Vx->at(i)-xVal, 2) + pow(Vz->at(i)-zVal, 2);
+		//std::cout << distance << std::endl;
+		if(distance <= pow(epsilon,2)){
+			std::cout << "OK" << std::endl;
+			retorno.addX(Vx->at(i));
+			retorno.addY(Vz->at(i));
+		}
+	}
+	return retorno;
 }
