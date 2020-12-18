@@ -93,7 +93,7 @@ std::vector<double> detectLine(cv::Mat& X, int x0, int w, int h) {
 	}
 
 	std::vector<double> poly_values;
-
+	
 	PolynomialRegression<double> polyfit;
 	if(!dataY->empty() && !dataX->empty())
 		polyfit.fitIt(*dataY, *dataX, 2, poly_values);
@@ -133,22 +133,26 @@ cv::Mat getMask(cv::Mat img, std::vector<double>& p1, std::vector<double>& p2)
 	//std::vector<double> p1 = detectLine(X, xL, 0.1 * X.cols, 0.1 * X.rows);  // p[2]*x^2 + p[1]*x + p[0]
 	//std::vector<double> p2 = detectLine(X, xR, 0.1 * X.cols, 0.1 * X.rows);
 	p1 = detectLine(X, xL, 0.1 * X.cols, 0.1 * X.rows);
-	p2 = detectLine(X, xL, 0.1 * X.cols, 0.1 * X.rows);
-
-	//std::cout << p1[0] << "," << p1[1] << "," << p1[2] << std::endl;
-	//std::cout << p2[0] << "," << p2[1] << "," << p2[2] << std::endl;
+	p2 = detectLine(X, xR, 0.1 * X.cols, 0.1 * X.rows);
+	
+        //std::cout << p1[0] << "," << p1[1] << "," << p1[2] << std::endl;
+        //std::cout << p2[0] << "," << p2[1] << "," << p2[2] << std::endl;
 
 	std::vector<cv::Point> leftLane, rightLane;
 	std::vector<cv::Point> laneArea;
 
 	cv::Mat lines(X.rows, X.cols, CV_8UC3, cv::Scalar(0));
-
-	if(!p1.empty() && !p2.empty()){
-		polyEval(X.rows, leftLane, rightLane, laneArea, p1, p2);	
-		cv::fillPoly(lines, laneArea, cv::Scalar(0, 200, 0));
-		cv::polylines(lines, leftLane, 0, cv::Scalar(0, 255, 255), 4);
-		cv::polylines(lines, rightLane, 0, cv::Scalar(0, 255, 255), 4);
-	}
 	
+	if(!p1.empty() && !p2.empty()){
+		polyEval(X.rows, leftLane, rightLane, laneArea, p1, p2);
+
+                std::vector<std::vector<cv::Point>> polygonos;  // por alguna razon tuve que hacer esto para que me funcionara en Ubuntu
+                polygonos.push_back(laneArea);
+
+                cv::fillPoly(lines, polygonos, cv::Scalar(0, 200, 0));
+                cv::polylines(lines, leftLane, 0, cv::Scalar(0, 255, 255), 4);
+                cv::polylines(lines, rightLane, 0, cv::Scalar(0, 255, 255), 4);
+	}
+
 	return lines;
 }

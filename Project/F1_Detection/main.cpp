@@ -12,18 +12,20 @@
 #include "LaneDetection.h"
 #include "racingLine.h"
 
-int main() 
+int main(int argc, char* argv[]) 
 {
 	int mode = 0; // 0 image, 1 video
 
 	if (!mode) {
-		cv::Mat img = cv::imread("4.png");
+		if(argc == 1)
+			return -1;
+		cv::Mat img = cv::imread(argv[1]);
 		cv::Mat img2 = img.clone();
 		cv::Mat invMatrix;
 		cv::Mat crop = projection(img, invMatrix);
 
 		cv::Mat X = getEdges(crop);
-		cv::imwrite("edges_segmentation.png", X);
+		//cv::imwrite("edges_segmentation.png", X);
 
 		//############### SHOW ##################
 		//cv::imshow("projection", crop);
@@ -31,7 +33,7 @@ int main()
 
 		//################ MASK #################
 		std::vector<double> pLeft, pRight;
-		cv::Mat lines = getMask(X, pLeft, pRight);
+		cv::Mat lines = getMask(crop, pLeft, pRight);
 		std::vector<double> distances = getDistances(X, pLeft, pRight);
 		
 		for (int i = 0; i < 10; i++) {
