@@ -20,17 +20,21 @@ public:
     QString filenameUDP;
 
 private slots:
-    void on_pushButton_clicked();
+    void on_videoButton_clicked();
 
-    void on_pushButton_3_clicked();
+    void on_csvButton_clicked();
 
-    void on_comboBox_currentIndexChanged(int index);
+    void on_trackSelection_currentIndexChanged(int index);
 
     void on_actionAbout_this_project_triggered();
 
-    void on_pushButton_2_clicked();
+    void on_exitButton_clicked();
 
-    void on_pushButton_4_clicked();
+    void on_runButton_clicked();
+
+    void on_videoPath_textChanged(const QString &arg1);
+
+    void on_csvPath_textChanged(const QString &arg1);
 
 private:
     Ui::MainWindow *ui;

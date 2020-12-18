@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     w.setWindowTitle("F1 Racing Line Trainning");
     w.setFixedSize(720, 480);
-    w.setWindowIcon(QIcon("../InterfaceELO328/icon.jpg"));
+    w.setWindowIcon(QIcon("../F1RacingLine/GUI_IMG/icon.jpg"));
 
     w.show();
     return a.exec();

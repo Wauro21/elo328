@@ -15,12 +15,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += /usr/local/include/opencv4
+LIBS += `pkg-config \
+    opencv4 \
+    --cflags \
+    --libs`
+
 SOURCES += \
+    LaneDetection.cpp \
+    Projection.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainProcessing.cpp \
+    mainwindow.cpp \
+    racingLine.cpp \
+    segFunctions.cpp
 
 HEADERS += \
-    mainwindow.h
+    LaneDetection.h \
+    Projection.h \
+    mainwindow.h \
+    polyfit.h \
+    racingLine.h
 
 FORMS += \
     mainwindow.ui

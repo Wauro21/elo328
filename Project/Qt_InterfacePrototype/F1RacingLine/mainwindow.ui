@@ -50,7 +50,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="trackSelection">
         <item>
          <property name="text">
           <string>Silverstone</string>
@@ -68,7 +68,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Shangai</string>
+          <string>Shanghai</string>
          </property>
         </item>
         <item>
@@ -99,7 +99,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="runButton">
     <property name="geometry">
      <rect>
       <x>490</x>
@@ -112,7 +112,7 @@
      <string>RUN</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="exitButton">
     <property name="geometry">
      <rect>
       <x>580</x>
@@ -136,28 +136,28 @@
     </property>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="videoButton">
        <property name="text">
         <string>Open Video File</string>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QPushButton" name="pushButton_4">
+      <widget class="QPushButton" name="csvButton">
        <property name="text">
         <string>Open Telemetry File</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="videoPath">
        <property name="text">
         <string>Select File Location</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="lineEdit_2">
+      <widget class="QLineEdit" name="csvPath">
        <property name="text">
         <string>Select File Location (.csv)</string>
        </property>
@@ -172,7 +172,7 @@
      <x>0</x>
      <y>0</y>
      <width>720</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuF1_Trainning">
