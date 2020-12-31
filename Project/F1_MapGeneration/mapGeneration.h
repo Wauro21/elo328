@@ -9,10 +9,10 @@
 #include <cmath>
 #include "matplotlibcpp.h"
 #include "Matrix.h"
-#define SILVERPATH "silverstone/"
 //Definicion de datatype para conveniencia
 typedef std::vector<std::vector<float>> readVector;
 //DEFINES
+#define SILVERPATH "silverstone/"
 
 class Matrix;
 // Leer archivos

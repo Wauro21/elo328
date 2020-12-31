@@ -145,3 +145,54 @@ Matrix window(Matrix& input, float xVal, float zVal, float epsilon){
 	}
 	return retorno;
 }
+
+
+// - Distancia horizontal
+
+std::vector<double> manyDistances(Matrix leftBorder, Matrix rightBorder, float x, float y, int n)
+{
+	//en este caso, x e y representan la posición del auto
+	std::vector<double> retorno;
+	float temp = 10;
+	float delta = temp; // FALTA CALIBRAR EL SALTO HACIA ADELANTE! Valor Temp
+	for(int i = 0; i < n; i ++){
+		retorno.push_back(oneDistance(leftBorder, rightBorder, x, y + (delta*i));
+	}
+
+	return retorno;
+}
+
+double oneDistance(Matrix leftBorder, Matrix rightBorder, float x, float y)
+{
+	// en este caso, x e y representan una posición que puede ser la del auto,
+	// pero no necesariamente
+	std::vector<float> leftBorderX =leftBorder.getX();
+	std::vector<float> leftBorderY =leftBorder.getY();
+	std::vector<float> rightBorderX =rightBorder.getX();
+	std::vector<float> rightBorderY =rightBorder.getY();
+
+	float NOTVALID = 100000;
+	float dleft = NOTVALID;
+	float dright = NOTVALID;
+	float xl = NOTVALID;
+	float xr = NOTVALID;
+
+	for (unsigned int i = 0; i < leftBorderX.size(); i++){
+		if(leftBorderX.at(i) < x){ // Verificar si esta a la izquierda de x
+			if((leftBorderY.at(i) - y) < dleft) && (leftBorderY.at(i) >= y) {
+				dleft = leftBorderY.at(i) - y;
+				xl = leftBorderX.at(i);
+			}
+		}
+	}
+	for (unsigned int i = 0; i < rightBorderX.size(); i++){
+		if(rightBorderX.at(i) > x){ //Verificar si esta a la derecha de x
+			if((rightBorderY.at(i) - y) < dright) && (rightBorderY.at(i) >= y) {
+				dright = rightBorderY.at(i) - y;
+				xr = rightBorderX.at(i);
+			}
+		}
+	}
+
+	return (double)(xr - xl);
+}
