@@ -32,4 +32,12 @@ void rotation(Matrix& input, float xVal, float zVal);
 
 // window
 Matrix window(Matrix& input, float xVal, float zVal, float epsilon);
+
+// Distances
+std::vector<double> manyDistances(Matrix leftBorder, Matrix rightBorder, float x, float y, int n = 10);
+
+double oneDistance(Matrix leftBorder, Matrix rightBorder, float x, float y);
+
+
+
 #endif

@@ -156,7 +156,7 @@ std::vector<double> manyDistances(Matrix leftBorder, Matrix rightBorder, float x
 	float temp = 10;
 	float delta = temp; // FALTA CALIBRAR EL SALTO HACIA ADELANTE! Valor Temp
 	for(int i = 0; i < n; i ++){
-		retorno.push_back(oneDistance(leftBorder, rightBorder, x, y + (delta*i));
+		retorno.push_back(oneDistance(leftBorder, rightBorder, x, y + (delta*i)));
 	}
 
 	return retorno;
@@ -179,7 +179,7 @@ double oneDistance(Matrix leftBorder, Matrix rightBorder, float x, float y)
 
 	for (unsigned int i = 0; i < leftBorderX.size(); i++){
 		if(leftBorderX.at(i) < x){ // Verificar si esta a la izquierda de x
-			if((leftBorderY.at(i) - y) < dleft) && (leftBorderY.at(i) >= y) {
+			if(((leftBorderY.at(i) - y) < dleft) && (leftBorderY.at(i) >= y)) {
 				dleft = leftBorderY.at(i) - y;
 				xl = leftBorderX.at(i);
 			}
@@ -187,7 +187,7 @@ double oneDistance(Matrix leftBorder, Matrix rightBorder, float x, float y)
 	}
 	for (unsigned int i = 0; i < rightBorderX.size(); i++){
 		if(rightBorderX.at(i) > x){ //Verificar si esta a la derecha de x
-			if((rightBorderY.at(i) - y) < dright) && (rightBorderY.at(i) >= y) {
+			if(((rightBorderY.at(i) - y) < dright) && (rightBorderY.at(i) >= y)) {
 				dright = rightBorderY.at(i) - y;
 				xr = rightBorderX.at(i);
 			}
