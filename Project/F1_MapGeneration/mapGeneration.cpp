@@ -1,4 +1,11 @@
 #include "mapGeneration.h"
+#define debX 126.28297424316406
+#define debZ -27.436925888061523
+#define vX 32071/32767.0f
+#define vZ 6712/32767.0f
+#define windowRes 30
+#define DISTANCESTEP 5
+
 namespace plt = matplotlibcpp;
 // Leer archivo
 
@@ -8,7 +15,6 @@ readVector readFile(std::string nameFile, int nSkip, int nCols, bool* indexes){
 	char formater = ' ';
 	readVector retorno;
 	file.open(nameFile);
-	std::cout << "AAA " << sizeof(indexes) << std::endl;
 	if(file.is_open()){
 		for(int i = 0; i < nSkip; i++){
 			getline(file,tempLine);      // Saltar linea de descripcion
@@ -77,18 +83,21 @@ void plotSilverstone(bool center, bool racingLine, std::string saveName){
 	Matrix outerLimit(readFile(SILVERPATH+trackArray[2],2,6,selCols));
 	Matrix raceLine(readFile(SILVERPATH+trackArray[3],2,6,selCols));
 	//window
-	Matrix wCenterline = window(centerline,464.4882202 ,-559.611145, 300);
-	Matrix wInnerLimit = window(innerLimit,464.4882202 ,-559.611145, 300);
-	Matrix wOuterLimit = window(outerLimit,464.4882202 ,-559.611145, 300);
-	Matrix wRaceLine = window(raceLine,464.4882202 ,-559.611145, 300);
+	Matrix wCenterline = window(centerline,debX ,debZ, windowRes);
+	Matrix wInnerLimit = window(innerLimit,debX ,debZ, windowRes);
+	Matrix wOuterLimit = window(outerLimit,debX ,debZ, windowRes);
+	Matrix wRaceLine = window(raceLine,debX ,debZ, windowRes);
 	//rotation
-	rotation(wCenterline,(-26251/32767),(19610.23/32767));
-	rotation(wCenterline,(-26251/32767),(19610.23/32767));
-	rotation(wInnerLimit,(-26251/32767),(19610.23/32767));
-	rotation(wOuterLimit,(-26251/32767),(19610.23/32767));
-	rotation(wRaceLine,(-26251/32767),(19610.23/32767));
-	plt::figure_size(1920, 1080);
+	rotation(wCenterline, vX, vZ);
+	rotation(wInnerLimit,vX, vZ);
+	rotation(wOuterLimit,vX, vZ);
+	rotation(wRaceLine,vX, vZ);
+	//plt::figure_size(1920, 1080);
 	//TEMP
+	std::vector<double> test = manyDistances(wOuterLimit, wInnerLimit, 0.0f, 0.0f,3);
+	for(unsigned int i = 0; i < test.size(); i++){
+		std::cout << test.at(i) << std::endl;
+	}
 	plotXZ(wInnerLimit, "innerLimit", "b-");
 	plotXZ(wOuterLimit, "outerLimit", "g-");
 	if(center){
@@ -97,6 +106,14 @@ void plotSilverstone(bool center, bool racingLine, std::string saveName){
 	if(racingLine){
 		plotXZ(wRaceLine, "racingLine", "m-");
 	}
+
+
+
+	std::vector<double> testX;
+	std::vector<double> testZ;
+	testX.push_back(0);
+	testZ.push_back(0);
+	plt::plot(testX, testZ, {{"c", "red"}, {"marker", "o"}});
 	plt::title("Pista: silverstone");
 	plt::legend();
 	if(saveName.length() != 0){
@@ -112,10 +129,10 @@ void rotation(Matrix& input, float xVal, float zVal){
 	float zPrime = 0.0f;
 	//Calculo de cos/sin desde vector de entrada
 	float hypot = sqrt(pow(xVal, 2) + pow(zVal, 2));
-	float a11 =  zVal/hypot;
-	float a12 = -xVal/hypot;
-	float a21 =  xVal/hypot;
-	float a22 =  zVal/hypot;
+	float a11 =  -zVal/hypot;
+	float a12 = xVal/hypot;
+	float a21 =  -xVal/hypot;
+	float a22 =  -zVal/hypot;
 	// Obtencion vectores de Matrix
 	std::vector<float>* Vx = input.getpX();
 	std::vector<float>* Vz = input.getpY();
@@ -133,14 +150,11 @@ Matrix window(Matrix& input, float xVal, float zVal, float epsilon){
 	std::vector<float>* Vx = input.getpX();
 	std::vector<float>* Vz = input.getpY();
 	float distance = 0.0f;
-	std::cout << "xSize"  << Vx->size() << " ySize" << Vz->size() << std::endl;
 	for(unsigned int i = 0; i < Vx->size(); i++){
 		distance = pow(Vx->at(i)-xVal, 2) + pow(Vz->at(i)-zVal, 2);
-		//std::cout << distance << std::endl;
 		if(distance <= pow(epsilon,2)){
-			std::cout << "OK" << std::endl;
-			retorno.addX(Vx->at(i));
-			retorno.addY(Vz->at(i));
+			retorno.addX(Vx->at(i)-xVal);
+			retorno.addY(Vz->at(i)-zVal);
 		}
 	}
 	return retorno;
@@ -149,12 +163,12 @@ Matrix window(Matrix& input, float xVal, float zVal, float epsilon){
 
 // - Distancia horizontal
 
-std::vector<double> manyDistances(Matrix leftBorder, Matrix rightBorder, float x, float y, int n)
+std::vector<double> manyDistances(Matrix& leftBorder, Matrix& rightBorder, float x, float y, int n)
 {
+	std::cout << "DEUS" <<leftBorder.getX().size() << std::endl;
 	//en este caso, x e y representan la posición del auto
 	std::vector<double> retorno;
-	float temp = 10;
-	float delta = temp; // FALTA CALIBRAR EL SALTO HACIA ADELANTE! Valor Temp
+	float delta = DISTANCESTEP; // FALTA CALIBRAR EL SALTO HACIA ADELANTE! Valor Temp
 	for(int i = 0; i < n; i ++){
 		retorno.push_back(oneDistance(leftBorder, rightBorder, x, y + (delta*i)));
 	}
@@ -162,7 +176,7 @@ std::vector<double> manyDistances(Matrix leftBorder, Matrix rightBorder, float x
 	return retorno;
 }
 
-double oneDistance(Matrix leftBorder, Matrix rightBorder, float x, float y)
+double oneDistance(Matrix& leftBorder, Matrix& rightBorder, float x, float y)
 {
 	// en este caso, x e y representan una posición que puede ser la del auto,
 	// pero no necesariamente
@@ -174,9 +188,8 @@ double oneDistance(Matrix leftBorder, Matrix rightBorder, float x, float y)
 	float NOTVALID = 100000;
 	float dleft = NOTVALID;
 	float dright = NOTVALID;
-	float xl = NOTVALID;
-	float xr = NOTVALID;
-
+	float xl = 5;
+	float xr = 4;
 	for (unsigned int i = 0; i < leftBorderX.size(); i++){
 		if(leftBorderX.at(i) < x){ // Verificar si esta a la izquierda de x
 			if(((leftBorderY.at(i) - y) < dleft) && (leftBorderY.at(i) >= y)) {
