@@ -1,8 +1,8 @@
 #include "mapGeneration.h"
-#define debX -559.611145
-#define debZ 464.4882202
-#define vX 19610/32767.0f
-#define vZ -26251/32767.0f
+#define debX 252.6337127685547
+#define debZ -75.0084457397461
+#define vX -12991/32767.0f
+#define vZ -30081/32767.0f
 #define windowRes 50
 #define yRes 40 //Distancia en metros hacia delante que cubre mascara
 
@@ -95,7 +95,7 @@ void plotSilverstone(bool center, bool racingLine, std::string saveName){
 	rotation(wRaceLine,vX, vZ);
 	//plt::figure_size(1920, 1080);
 	//TEMP
-	std::vector<double> test = manyDistances(wOuterLimit, wInnerLimit, 0.0f, 0.0f);
+	std::vector<double> test = manyDistances(wOuterLimit, wInnerLimit, wRaceLine, 0.0f, 0.0f);
 	for(unsigned int i = 0; i < test.size(); i++){
 		std::cout << test.at(i) << std::endl;
 	}
@@ -164,19 +164,19 @@ Matrix window(Matrix& input, float xVal, float zVal, float epsilon){
 
 // - Distancia horizontal
 
-std::vector<double> manyDistances(Matrix& leftBorder, Matrix& rightBorder, float x, float y, int n)
+std::vector<double> manyDistances(Matrix& leftBorder, Matrix& rightBorder, Matrix& racingLine, float x, float y, int n)
 {
 	//en este caso, x e y representan la posición del auto
 	std::vector<double> retorno;
 	float delta = yRes/n; // FALTA CALIBRAR EL SALTO HACIA ADELANTE!
 	for(int i = 0; i < n; i ++){
-		retorno.push_back(oneDistance(leftBorder, rightBorder, x, y + (delta*i)));
+		retorno.push_back(oneDistance(leftBorder, rightBorder, racingLine, x, y + (delta*i)));
 	}
 
 	return retorno;
 }
 
-double oneDistance(Matrix& leftBorder, Matrix& rightBorder, float x, float y)
+double oneDistance(Matrix& leftBorder, Matrix& rightBorder, Matrix& racingLine, float x, float y)
 {
 	// en este caso, x e y representan una posición que puede ser la del auto,
 	// pero no necesariamente
@@ -184,28 +184,35 @@ double oneDistance(Matrix& leftBorder, Matrix& rightBorder, float x, float y)
 	std::vector<float> leftBorderY =leftBorder.getY();
 	std::vector<float> rightBorderX =rightBorder.getX();
 	std::vector<float> rightBorderY =rightBorder.getY();
+	std::vector<float> racingX = racingLine.getX();
+	std::vector<float> racingY = racingLine.getY();
 
 	float NOTVALID = 100000;
 	float dleft = NOTVALID;
 	float dright = NOTVALID;
+	float drace = NOTVALID;
 	float xl = NOTVALID;
 	float xr = NOTVALID;
+	float xRace = NOTVALID;
+
 	for (unsigned int i = 0; i < leftBorderX.size(); i++){
-		if(leftBorderX.at(i) < x){ // Verificar si esta a la izquierda de x
-			if(((leftBorderY.at(i) - y) < dleft) && (leftBorderY.at(i) >= y)) {
-				dleft = leftBorderY.at(i) - y;
-				xl = leftBorderX.at(i);
-			}
+		if(((leftBorderY.at(i) - y) < dleft) && (leftBorderY.at(i) >= y)) {
+			dleft = leftBorderY.at(i) - y;
+			xl = leftBorderX.at(i);
 		}
 	}
-	for (unsigned int i = 0; i < rightBorderX.size(); i++){
-		if(rightBorderX.at(i) > x){ //Verificar si esta a la derecha de x
-			if(((rightBorderY.at(i) - y) < dright) && (rightBorderY.at(i) >= y)) {
-				dright = rightBorderY.at(i) - y;
-				xr = rightBorderX.at(i);
-			}
+	for (unsigned int i = 0; i < racingX.size(); i++){
+		if(((racingY.at(i) - y) < drace) && (racingY.at(i) >= y)) {
+			drace = racingY.at(i) - y;
+			xRace = racingX.at(i);
 		}
 	}
 
-	return (double)(xr - xl);
+	for (unsigned int i = 0; i < rightBorderX.size(); i++){
+		if(((rightBorderY.at(i) - y) < dright) && (rightBorderY.at(i) >= y)) {
+			dright = rightBorderY.at(i) - y;
+			xr = rightBorderX.at(i);
+		}
+	}
+	return (double) ((xRace - xl)/(xr - xl));
 }
