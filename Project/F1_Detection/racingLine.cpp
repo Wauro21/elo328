@@ -36,23 +36,20 @@ std::vector<double> racingPoly(std::vector<cv::Point> racingPoints)
 	}
 
 	PolynomialRegression<double> polyfit;
-	polyfit.fitIt(*dataY, *dataX, 2, polyValues); 
+	polyfit.fitIt(*dataY, *dataX, 2, polyValues);
 
 	return polyValues;
 }
 
 void drawRacingLine(cv::Mat& X, std::vector<double> polyValues, int widthRacingLine)
 {
-	std::vector<cv::Point> leftLane, rightLane;
-	std::vector<cv::Point> laneArea;
-	std::vector<double> polyValuesL(polyValues), polyValuesR(polyValues);
+	std::vector<cv::Point> raceLine;
+	double res = 0.0d;
+	for(unsigned int i = 0; i < X.rows; i++){
+		res = polyValues[0] + polyValues[1]*i + polyValues[2]*(i*i);
+		raceLine.push_back(cv::Point((int)res,i));
+	}
+	cv::polylines(X, raceLine, 0, cv::Scalar(0, 0, 255), widthRacingLine);
 
 
-	polyValuesL[0] -= widthRacingLine;
-	polyValuesR[0] += widthRacingLine;
-
-	polyEval(X.rows, leftLane, rightLane, laneArea, polyValuesL, polyValuesR);
-	cv::fillPoly(X, laneArea, cv::Scalar(0, 0, 255));
-	cv::polylines(X, leftLane, 0, cv::Scalar(255, 255, 255), 4);
-	cv::polylines(X, rightLane, 0, cv::Scalar(255, 255, 255), 4);
 }

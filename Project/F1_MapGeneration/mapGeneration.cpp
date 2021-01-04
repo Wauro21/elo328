@@ -1,11 +1,12 @@
 #include "mapGeneration.h"
-#define debX 252.6337127685547
-#define debZ -75.0084457397461
-#define vX -12991/32767.0f
-#define vZ -30081/32767.0f
-#define windowRes 50
-#define yRes 40 //Distancia en metros hacia delante que cubre mascara
-
+#define debX -256.6717529296875
+#define debZ -526.1317138671875
+#define vX -30156/32767.0f
+#define vZ -12807/32767.0f
+#define windowRes 60
+#define yRes 34 //Distancia en metros hacia delante que cubre mascara
+#define offsetz -5
+#define offsetx	0.5
 
 namespace plt = matplotlibcpp;
 // Leer archivo
@@ -140,8 +141,8 @@ void rotation(Matrix& input, float xVal, float zVal){
 	for(int i = 0; i < input.getSize(); i++){
 		xPrime = Vx->at(i)*a11 + Vz->at(i)*a12;
 		zPrime = Vx->at(i)*a21 + Vz->at(i)*a22;
-		(*Vx)[i] = xPrime;
-		(*Vz)[i] = zPrime;
+		(*Vx)[i] = xPrime + offsetx;
+		(*Vz)[i] = zPrime + offsetz;
 	}
 }
 

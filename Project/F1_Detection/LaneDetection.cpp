@@ -98,7 +98,7 @@ std::vector<double> detectLine(cv::Mat& X, int x0, int w, int h) {
 	}
 
 	std::vector<double> poly_values;
-	
+
 	PolynomialRegression<double> polyfit;
 	if(!dataY->empty() && !dataX->empty())
 		polyfit.fitIt(*dataY, *dataX, 2, poly_values);
@@ -109,7 +109,7 @@ std::vector<double> detectLine(cv::Mat& X, int x0, int w, int h) {
 	return poly_values;
 }
 
-void polyEval(int size_x, std::vector<cv::Point>& L, std::vector<cv::Point>& R, std::vector<cv::Point>& area, 
+void polyEval(int size_x, std::vector<cv::Point>& L, std::vector<cv::Point>& R, std::vector<cv::Point>& area,
 			std::vector<double>& p1, std::vector<double>& p2) {
 
 	for (int x = 0; x < size_x; x++) {
@@ -141,7 +141,7 @@ cv::Mat getMask(cv::Mat img, std::vector<double>& p1, std::vector<double>& p2)
 	std::vector<cv::Point> laneArea;
 
 	cv::Mat lines(X.rows, X.cols, CV_8UC3, cv::Scalar(0));
-	
+
 	if(!p1.empty() && !p2.empty()){
 		polyEval(X.rows, leftLane, rightLane, laneArea, p1, p2);
 
