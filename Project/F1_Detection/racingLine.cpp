@@ -40,3 +40,19 @@ std::vector<double> racingPoly(std::vector<cv::Point> racingPoints)
 
 	return polyValues;
 }
+
+void drawRacingLine(cv::Mat& X, std::vector<double> polyValues, int widthRacingLine)
+{
+	std::vector<cv::Point> leftLane, rightLane;
+	std::vector<cv::Point> laneArea;
+	std::vector<double> polyValuesL(polyValues), polyValuesR(polyValues);
+
+
+	polyValuesL[0] -= widthRacingLine;
+	polyValuesR[0] += widthRacingLine;
+
+	polyEval(X.rows, leftLane, rightLane, laneArea, polyValuesL, polyValuesR);
+	cv::fillPoly(X, laneArea, cv::Scalar(0, 0, 255));
+	cv::polylines(X, leftLane, 0, cv::Scalar(255, 255, 255), 4);
+	cv::polylines(X, rightLane, 0, cv::Scalar(255, 255, 255), 4);
+}

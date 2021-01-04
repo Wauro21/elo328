@@ -15,6 +15,7 @@
 #include <opencv2/core/types_c.h>
 #include <iostream>
 
+#include "LaneDetection.h"
 #include "polyfit.h"
 
 std::vector<cv::Point> getDistances(cv::Mat X, std::vector<double> percentage, std::vector<double> p1left, std::vector<double> p2right, int n=10);
@@ -28,6 +29,11 @@ std::vector<double> racingPoly(std::vector<cv::Point> racingPoints);
 /*
 * Obtiene un vector de doubles que representan los parametros de un polinomio de orden 2 a partir de un vector
 * de puntos, que se obtiene en getDistances 
+*/
+
+void drawRacingLine(cv::Mat& X, std::vector<double> polyValues, int widthRacingLine = 10);
+/*
+* dibuja la linea de carreras en la imagen de entrada X
 */
 
 #endif /* RACINGLINE_H */
