@@ -21,7 +21,22 @@ std::vector<cv::Point> getDistances(cv::Mat X, std::vector<double> percentage, s
 		raceLineY = (p1left[2] * x * x + p1left[1] * x + p1left[0]) + percentage.at(i) * distance;
 		returnV2.push_back(cv::Point(x,raceLineY));
 	}
-
-
 	return returnV2;
+}
+
+std::vector<double> racingPoly(std::vector<cv::Point> racingPoints)
+{
+	std::vector<double> polyValues;
+	std::vector<double>* dataY = new std::vector<double>;
+	std::vector<double>* dataX = new std::vector<double>;
+
+	for (int i = 0; i < racingPoints.size(); i++) {
+		dataY->push_back(racingPoints[i].x);
+		dataX->push_back(racingPoints[i].y);
+	}
+
+	PolynomialRegression<double> polyfit;
+	polyfit.fitIt(*dataY, *dataX, 2, polyValues); 
+
+	return polyValues;
 }

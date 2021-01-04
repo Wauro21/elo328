@@ -15,13 +15,19 @@
 #include <opencv2/core/types_c.h>
 #include <iostream>
 
-
+#include "polyfit.h"
 
 std::vector<cv::Point> getDistances(cv::Mat X, std::vector<double> percentage, std::vector<double> p1left, std::vector<double> p2right, int n=10);
 /*
- * Obtiene distancias transversales de la mascara para n subdivisiones
- * en el caso de que uno de los bordes se salga de la imagen, retorna -1. Se debe considerar cuando se implemente la funcion
- * relacionada a la telemetría
- */
+* Obtiene distancias transversales de la mascara para n subdivisiones
+* en el caso de que uno de los bordes se salga de la imagen, retorna -1. Se debe considerar cuando se implemente la funcion
+* relacionada a la telemetría
+*/
+
+std::vector<double> racingPoly(std::vector<cv::Point> racingPoints);
+/*
+* Obtiene un vector de doubles que representan los parametros de un polinomio de orden 2 a partir de un vector
+* de puntos, que se obtiene en getDistances 
+*/
 
 #endif /* RACINGLINE_H */
