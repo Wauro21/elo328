@@ -1,10 +1,11 @@
 #include "mapGeneration.h"
-#define debX 126.28297424316406
-#define debZ -27.436925888061523
-#define vX 32071/32767.0f
-#define vZ 6712/32767.0f
-#define windowRes 30
-#define DISTANCESTEP 5
+#define debX -559.611145
+#define debZ 464.4882202
+#define vX 19610/32767.0f
+#define vZ -26251/32767.0f
+#define windowRes 50
+#define yRes 40 //Distancia en metros hacia delante que cubre mascara
+
 
 namespace plt = matplotlibcpp;
 // Leer archivo
@@ -94,7 +95,7 @@ void plotSilverstone(bool center, bool racingLine, std::string saveName){
 	rotation(wRaceLine,vX, vZ);
 	//plt::figure_size(1920, 1080);
 	//TEMP
-	std::vector<double> test = manyDistances(wOuterLimit, wInnerLimit, 0.0f, 0.0f,3);
+	std::vector<double> test = manyDistances(wOuterLimit, wInnerLimit, 0.0f, 0.0f);
 	for(unsigned int i = 0; i < test.size(); i++){
 		std::cout << test.at(i) << std::endl;
 	}
@@ -165,10 +166,9 @@ Matrix window(Matrix& input, float xVal, float zVal, float epsilon){
 
 std::vector<double> manyDistances(Matrix& leftBorder, Matrix& rightBorder, float x, float y, int n)
 {
-	std::cout << "DEUS" <<leftBorder.getX().size() << std::endl;
 	//en este caso, x e y representan la posición del auto
 	std::vector<double> retorno;
-	float delta = DISTANCESTEP; // FALTA CALIBRAR EL SALTO HACIA ADELANTE! Valor Temp
+	float delta = yRes/n; // FALTA CALIBRAR EL SALTO HACIA ADELANTE!
 	for(int i = 0; i < n; i ++){
 		retorno.push_back(oneDistance(leftBorder, rightBorder, x, y + (delta*i)));
 	}
@@ -188,8 +188,8 @@ double oneDistance(Matrix& leftBorder, Matrix& rightBorder, float x, float y)
 	float NOTVALID = 100000;
 	float dleft = NOTVALID;
 	float dright = NOTVALID;
-	float xl = 5;
-	float xr = 4;
+	float xl = NOTVALID;
+	float xr = NOTVALID;
 	for (unsigned int i = 0; i < leftBorderX.size(); i++){
 		if(leftBorderX.at(i) < x){ // Verificar si esta a la izquierda de x
 			if(((leftBorderY.at(i) - y) < dleft) && (leftBorderY.at(i) >= y)) {
