@@ -40,7 +40,7 @@ void calculateHistogram(cv::Mat& X, int* xL, int* xR) {
 std::vector<double> detectLine(cv::Mat& X, int x0, int w, int h) {
 
 	int rows = X.rows;
-    //int cols = X.cols;
+    int cols = X.cols;
 
 	int X0 = x0;
 
@@ -59,6 +59,7 @@ std::vector<double> detectLine(cv::Mat& X, int x0, int w, int h) {
 
 	for (int k = 1; k <= n_win; k++) {
 
+
 		/* Comienza recorriendo la imagen desde abajo */
 		for (int i = rows - k * h; i < rows - (k - 1) * h; i++) {
 			for (int j = (int)(X0 - w / 2); j < (int)(X0 + w / 2); j++) {
@@ -69,7 +70,6 @@ std::vector<double> detectLine(cv::Mat& X, int x0, int w, int h) {
 				}
 			}
 		}
-
 		if (k == 1) {
 			w_begin = 0;
 			w_end = 0;
@@ -85,9 +85,14 @@ std::vector<double> detectLine(cv::Mat& X, int x0, int w, int h) {
 			for (int m = w_begin; m < w_end; m++) {
 				mean += dataX->at(m);
 			}
-			mean /= ( (double)w_end - (double)w_begin );
-
-			X0 = (int)mean;
+            if(mean > 0 ){
+                mean /= (double)(w_end - w_begin);
+                X0 = (int)mean - X0 > 0 ? X0 + (int)w/4 : X0 - (int)w/4;
+            }
+            if(X0 + w/2 > cols)
+                X0 = (int)(cols - w/2);
+            if(X0 - w/2 < 0)
+                X0 = (int)(w/2);
 		}
 
 	}
@@ -127,7 +132,6 @@ cv::Mat getMask(cv::Mat img, std::vector<double>& p1, std::vector<double>& p2)
 	int xR = 0;
 
 	calculateHistogram(X, &xL, &xR);
-
     //std::cout << xL << "," << xR << std::endl;
 
 	p1 = detectLine(X, xL, 0.1 * X.cols, 0.1 * X.rows);
