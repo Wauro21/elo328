@@ -17,7 +17,7 @@
 
 
 
-std::vector<double> getDistances(cv::Mat X, std::vector<double> p1left, std::vector<double> p2right, int n=10);
+std::vector<cv::Point> getDistances(cv::Mat X, std::vector<double> percentage, std::vector<double> p1left, std::vector<double> p2right, int n=10);
 /*
  * Obtiene distancias transversales de la mascara para n subdivisiones
  * en el caso de que uno de los bordes se salga de la imagen, retorna -1. Se debe considerar cuando se implemente la funcion
