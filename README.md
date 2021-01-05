@@ -9,10 +9,16 @@
 - Felipe Villenas (felipeville)
 ---
 ## Índice
-- [Instalación](#Instalacion)
-  * [Instalación en Ubuntu](#instalacion-en-ubuntu)
-    + [Pre-requisitos](#prerequisitos)
-- [Guía de Uso](#Guia-de-uso)
+- [Instalación](#1-instalación)
+  * [Instalación en Ubuntu](#11-instalación-en-ubuntu)
+    + [Pre-requisitos](#111-pre-requisitos)
+    + [Ejecución del Programa](#112-ejecución-del-programa)
+    + [Dataset](#113-dataset)
+  * [Instalación desde Código Fuente](#12-instalación-desde-el-código-fuente)
+    + [Pre-requisito: Qt Creator](#121-pre-requisito-qt-creator)
+    + [Pre-requisito: OpenCV](#122-pre-requisito-opencv)
+    + [Compilación y Ejecución](#123-compilación-y-ejecución)
+- [Guía de Uso](#2-guía-de-uso)
 ## 1. Instalación
 ### 1.1. Instalación en Ubuntu
 
@@ -58,5 +64,10 @@ Luego, con Qt Creator ya instalado es posible poder abrir el archivo `*.pro` con
 Para poder compilar el programa es necesario instalar las librerías de **OpenCV**. Primero, se debe descargar **OpenCV 4.4.0** desde el siguiente [enlace](https://github.com/opencv/opencv/archive/4.4.0.zip). Luego, para instalar OpenCV, se debe seguir los pasos del siguiente [tutorial](https://medium.com/@sb.jaduniv/how-to-install-opencv-4-2-0-with-cuda-10-1-on-ubuntu-20-04-lts-focal-fossa-bdc034109df3).
 
 Luego de completar la instalación, idealmente se debe agregar la ruta de donde están las liberías de OpenCV al **PATH** del sistema, para facilitar el proceso a la hora de incluir las librerías en Qt Creator.
+
+#### 1.2.3. Compilación y Ejecución
+Para compilar y ejecutar el programa, se debe abrir el archivo `*.pro` incluido en la descarga con Qt Creator. En el archivo `*.pro`, se debe cerciorarse que la variable `INCLUDEPATH` tenga la ruta correcta de donde se encuentran los *headers* de OpenCV. 
+
+Luego, en la siguiente figura se muestra como compilar y ejecutar el programa dentro del IDE.
 
 ## 2. Guía de Uso
