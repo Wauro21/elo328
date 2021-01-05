@@ -69,5 +69,12 @@ Luego de completar la instalación, idealmente se debe agregar la ruta de donde 
 Para compilar y ejecutar el programa, se debe abrir el archivo `*.pro` incluido en la descarga con Qt Creator. En el archivo `*.pro`, se debe cerciorarse que la variable `INCLUDEPATH` tenga la ruta correcta de donde se encuentran los *headers* de OpenCV. 
 
 Luego, en la siguiente figura se muestra como compilar y ejecutar el programa dentro del IDE.
+<details>
+ <summary>Imagen</summary>
+ 
+  ![Vista de interfaz del IDE Qt Creator](/Project/zImagenesDoc/qt_run.png)
+</details>
+
+---
 
 ## 2. Guía de Uso
