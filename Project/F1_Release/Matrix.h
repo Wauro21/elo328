@@ -4,6 +4,10 @@
 #include <vector>
 #include <iostream>
 typedef std::vector<std::vector<float>> readVector;
+/*---------------------------------------------------------------------------*/
+/*
+ * @brief       : clase que representa un vector de vectores (dimensión nx2)
+ */
 class Matrix{
 	public:
 		//Constructor
@@ -33,6 +37,6 @@ class Matrix{
 		std::vector<float>* Y;
 		int size;
 };
-
+/*---------------------------------------------------------------------------*/
 
 #endif
