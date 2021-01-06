@@ -3,7 +3,7 @@
 
 /*
  * Proyecto ELO328 - 2020.S2 - G1
- * Modulo de Proyeccion de Pista
+ * Modulo de línea de carreras
  * Autor: Diego Badillo - 16/12/2020
  */
 

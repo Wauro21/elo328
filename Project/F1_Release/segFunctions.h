@@ -3,7 +3,7 @@
 
 /*
  * Proyecto ELO328 - 2020.S2 - G1
- * Modulo de Proyeccion de Pista
+ * Modulo de segmentación
  * Autor: Diego Badillo - 06/12/2020
  */
 
