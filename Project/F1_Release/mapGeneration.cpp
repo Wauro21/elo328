@@ -11,7 +11,7 @@
 #define offsetz 2.64
 #define offsetx	0
 
-namespace plt = matplotlibcpp;
+//namespace plt = matplotlibcpp;
 // Leer archivo
 
 readVector readFile(std::string nameFile, int nSkip, int nCols, bool* indexes){
@@ -70,62 +70,62 @@ void printVector(readVector toPrint){
 // Plotear - Wrapper
 
 
-void plotXZ(Matrix input, std::string name, std::string style){
-	plt::named_plot(name, input.getX(), input.getY(), style);
-}
+// void plotXZ(Matrix input, std::string name, std::string style){
+// 	plt::named_plot(name, input.getX(), input.getY(), style);
+// }
 
 
 
 // - Defecto silverstone
 
-void plotSilverstone(bool center, bool racingLine, std::string saveName){
-	// Nombres archivos
-	std::string trackArray[] = {"silverstone_2020_centerline.track","silverstone_2020_innerlimit.track", "silverstone_2020_outerlimit.track","silverstone_2020_racingline.track"};
-	bool selCols[] = {false, true, true, false, false, false};
-	//Valores de pista
-	Matrix centerline(readFile(SILVERPATH+trackArray[0],2,6,selCols));
-	Matrix innerLimit(readFile(SILVERPATH+trackArray[1],2,6,selCols));
-	Matrix outerLimit(readFile(SILVERPATH+trackArray[2],2,6,selCols));
-	Matrix raceLine(readFile(SILVERPATH+trackArray[3],2,6,selCols));
-	//window
-	Matrix wCenterline = window(centerline,debX ,debZ, windowRes);
-	Matrix wInnerLimit = window(innerLimit,debX ,debZ, windowRes);
-	Matrix wOuterLimit = window(outerLimit,debX ,debZ, windowRes);
-	Matrix wRaceLine = window(raceLine,debX ,debZ, windowRes);
-	//rotation
-	rotation(wCenterline, vX, vZ);
-	rotation(wInnerLimit,vX, vZ);
-	rotation(wOuterLimit,vX, vZ);
-	rotation(wRaceLine,vX, vZ);
-	//plt::figure_size(1920, 1080);
-	//TEMP
-	std::vector<double> test = manyDistances(wOuterLimit, wInnerLimit, wRaceLine);
-	for(unsigned int i = 0; i < test.size(); i++){
-		std::cout << test.at(i) << std::endl;
-	}
-	plotXZ(wInnerLimit, "innerLimit", "b-");
-	plotXZ(wOuterLimit, "outerLimit", "g-");
-	if(center){
-		plotXZ(wCenterline, "centerline", "k-");
-	}
-	if(racingLine){
-		plotXZ(wRaceLine, "racingLine", "m-");
-	}
-
-
-
-	std::vector<double> testX;
-	std::vector<double> testZ;
-	testX.push_back(0);
-	testZ.push_back(0);
-	plt::plot(testX, testZ, {{"c", "red"}, {"marker", "o"}});
-	plt::title("Pista: silverstone");
-	plt::legend();
-	if(saveName.length() != 0){
-		plt::save(saveName+".png");
-	}
-	plt::show();
-}
+// void plotSilverstone(bool center, bool racingLine, std::string saveName){
+// 	// Nombres archivos
+// 	std::string trackArray[] = {"silverstone_2020_centerline.track","silverstone_2020_innerlimit.track", "silverstone_2020_outerlimit.track","silverstone_2020_racingline.track"};
+// 	bool selCols[] = {false, true, true, false, false, false};
+// 	//Valores de pista
+// 	Matrix centerline(readFile(SILVERPATH+trackArray[0],2,6,selCols));
+// 	Matrix innerLimit(readFile(SILVERPATH+trackArray[1],2,6,selCols));
+// 	Matrix outerLimit(readFile(SILVERPATH+trackArray[2],2,6,selCols));
+// 	Matrix raceLine(readFile(SILVERPATH+trackArray[3],2,6,selCols));
+// 	//window
+// 	Matrix wCenterline = window(centerline,debX ,debZ, windowRes);
+// 	Matrix wInnerLimit = window(innerLimit,debX ,debZ, windowRes);
+// 	Matrix wOuterLimit = window(outerLimit,debX ,debZ, windowRes);
+// 	Matrix wRaceLine = window(raceLine,debX ,debZ, windowRes);
+// 	//rotation
+// 	rotation(wCenterline, vX, vZ);
+// 	rotation(wInnerLimit,vX, vZ);
+// 	rotation(wOuterLimit,vX, vZ);
+// 	rotation(wRaceLine,vX, vZ);
+// 	//plt::figure_size(1920, 1080);
+// 	//TEMP
+// 	std::vector<double> test = manyDistances(wOuterLimit, wInnerLimit, wRaceLine);
+// 	for(unsigned int i = 0; i < test.size(); i++){
+// 		std::cout << test.at(i) << std::endl;
+// 	}
+// 	plotXZ(wInnerLimit, "innerLimit", "b-");
+// 	plotXZ(wOuterLimit, "outerLimit", "g-");
+// 	if(center){
+// 		plotXZ(wCenterline, "centerline", "k-");
+// 	}
+// 	if(racingLine){
+// 		plotXZ(wRaceLine, "racingLine", "m-");
+// 	}
+//
+//
+//
+// 	std::vector<double> testX;
+// 	std::vector<double> testZ;
+// 	testX.push_back(0);
+// 	testZ.push_back(0);
+// 	plt::plot(testX, testZ, {{"c", "red"}, {"marker", "o"}});
+// 	plt::title("Pista: silverstone");
+// 	plt::legend();
+// 	if(saveName.length() != 0){
+// 		plt::save(saveName+".png");
+// 	}
+// 	plt::show();
+// }
 
 // - Aplicar rotacion y traslacion
 void rotation(Matrix& input, float xVal, float zVal){

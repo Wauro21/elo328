@@ -7,7 +7,7 @@
 #include <vector>
 #include <iomanip>
 #include <cmath>
-#include "matplotlibcpp.h"
+//#include "matplotlibcpp.h"
 #include "Matrix.h"
 //Definicion de datatype para conveniencia
 typedef std::vector<std::vector<float>> readVector;
@@ -22,10 +22,10 @@ readVector readFile(std::string nameFile, int nSkip, int nCols, bool* indexes);
 void printVector(readVector toPrint);
 
 // Plot silverstone
-void plotSilverstone(bool center, bool racingLine, std::string saveName);
+//void plotSilverstone(bool center, bool racingLine, std::string saveName);
 
 // Plot generico
-void plotXZ(readVector input, std::string name, std::string style);
+//void plotXZ(readVector input, std::string name, std::string style);
 
 // rotacion
 void rotation(Matrix& input, float xVal, float zVal);
