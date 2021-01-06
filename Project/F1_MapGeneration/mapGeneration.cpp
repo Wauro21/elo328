@@ -1,8 +1,8 @@
 #include "mapGeneration.h"
-#define debX -256.6717529296875
-#define debZ -526.1317138671875
-#define vX -30156/32767.0f
-#define vZ -12807/32767.0f
+#define debX 251.72744750976562
+#define debZ -73.80731964111328
+#define vX -5503/32767.0f
+#define vZ -32301/32767.0f
 #define windowRes 60
 #define yRes 34 //Distancia en metros hacia delante que cubre mascara
 #define offsetz -5
