@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QHBoxLayout>
+#include "loadwin.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,6 +19,9 @@ public:
     ~MainWindow();
     QString filename;
     QString filenameUDP;
+
+signals:
+    void updateBar(int);
 
 private slots:
     void on_videoButton_clicked();
@@ -36,7 +40,11 @@ private slots:
 
     void on_csvPath_textChanged(const QString &arg1);
 
+    void on_runvideoButton_clicked();
+
 private:
     Ui::MainWindow *ui;
+    LoadWin *lwin;
+
 };
 #endif // MAINWINDOW_H

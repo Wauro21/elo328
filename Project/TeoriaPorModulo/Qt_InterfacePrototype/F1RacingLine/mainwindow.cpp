@@ -22,6 +22,9 @@ MainWindow::MainWindow(QWidget *parent)
     QPixmap imagen;
     imagen.load("../F1RacingLine/GUI_IMG/icon_track0.jpg");
     ui->trackViewer->setPixmap(imagen);
+
+    lwin = new LoadWin();
+    connect(this, SIGNAL(updateBar(int)), lwin->pBar, SLOT(setValue(int)));
 }
 
 
@@ -29,7 +32,7 @@ void MainWindow::on_videoButton_clicked()
 {
     filename = QFileDialog::getOpenFileName(
                 this, tr("Open File"), "../F1RacingLine/Dataset/img",
-                tr("Images (*.png *.jpeg *.jpg *.bmp)"));
+                tr("Images-Video (*.png *.jpeg *.jpg *.bmp *.mov)"));
     ui->videoPath->setText(filename);
 }
 
@@ -55,6 +58,12 @@ void MainWindow::on_runButton_clicked()
         cv::imshow("Result", out);
         cv::waitKey(0);
     }
+}
+
+void MainWindow::on_runvideoButton_clicked()
+{
+    lwin->show();
+    emit updateBar(12);
 }
 
 void MainWindow::on_trackSelection_currentIndexChanged(int index)
@@ -85,3 +94,4 @@ MainWindow::~MainWindow(){ delete ui; }
 void MainWindow::on_exitButton_clicked(){ this->close(); }
 void MainWindow::on_videoPath_textChanged(const QString &arg1){ filename = arg1; }
 void MainWindow::on_csvPath_textChanged(const QString &arg1){ filenameUDP = arg1; }
+

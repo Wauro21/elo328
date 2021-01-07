@@ -24,6 +24,7 @@ LIBS += `pkg-config \
 SOURCES += \
     LaneDetection.cpp \
     Projection.cpp \
+    loadwin.cpp \
     main.cpp \
     mainProcessing.cpp \
     mainwindow.cpp \
@@ -33,11 +34,13 @@ SOURCES += \
 HEADERS += \
     LaneDetection.h \
     Projection.h \
+    loadwin.h \
     mainwindow.h \
     polyfit.h \
     racingLine.h
 
 FORMS += \
+    loadwin.ui \
     mainwindow.ui
 
 # Default rules for deployment.
