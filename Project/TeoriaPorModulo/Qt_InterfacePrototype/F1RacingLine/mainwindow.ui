@@ -99,32 +99,6 @@
      </property>
     </widget>
    </widget>
-   <widget class="QPushButton" name="runButton">
-    <property name="geometry">
-     <rect>
-      <x>490</x>
-      <y>400</y>
-      <width>80</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>RUN</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="exitButton">
-    <property name="geometry">
-     <rect>
-      <x>580</x>
-      <y>400</y>
-      <width>80</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>EXIT</string>
-    </property>
-   </widget>
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
@@ -138,7 +112,7 @@
      <item row="0" column="0">
       <widget class="QPushButton" name="videoButton">
        <property name="text">
-        <string>Open Video File</string>
+        <string>Open Video/Image</string>
        </property>
       </widget>
      </item>
@@ -160,6 +134,39 @@
       <widget class="QLineEdit" name="csvPath">
        <property name="text">
         <string>Select File Location (.csv)</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>390</y>
+      <width>451</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="runvideoButton">
+       <property name="text">
+        <string>Video Mode</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="runButton">
+       <property name="text">
+        <string>Image Mode</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="exitButton">
+       <property name="text">
+        <string>Exit</string>
        </property>
       </widget>
      </item>
