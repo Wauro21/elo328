@@ -23,19 +23,22 @@ LIBS += `pkg-config \
 
 SOURCES += \
     LaneDetection.cpp \
+    Matrix.cpp \
     Projection.cpp \
     loadwin.cpp \
     main.cpp \
-    mainProcessing.cpp \
     mainwindow.cpp \
+    mapGeneration.cpp \
     racingLine.cpp \
     segFunctions.cpp
 
 HEADERS += \
     LaneDetection.h \
+    Matrix.h \
     Projection.h \
     loadwin.h \
     mainwindow.h \
+    mapGeneration.h \
     polyfit.h \
     racingLine.h
 
