@@ -25,46 +25,108 @@
 #define csvSkip 1 //las lineas que se salta en la lectura del .csv
 #define nColsCSV 6 // Numero columnas archivo csv
 #define windowRes 60 // Resolucion corte periférico
+#define MODO_IMG false
+#define MODO_VID true
 
+std::string inputIMG = "NewTelemetry/0.jpg";
+std::string udpIMG = "NewTelemetry/0.csv";
 
-//std::string nDataset = "2";
-//std::string imgExt = ".jpg";
-//std::string testDataPath = "TestDataset/";
-//std::string defaultIMG = testDataPath + nDataset + imgExt;
-//std::string defaultCSV = testDataPath + nDataset + ".csv";
-std::string defaultIMG = "TestDataset/RacingLineTest/0wo.jpg";
-std::string defaultCSV = "TestDataset/RacingLineTest/0.csv";
-int main(int argc, char* argv[])
+std::string inputVID = "NewTelemetry/redbull.mp4";
+std::string udpVID = "NewTelemetry/redbull3.txt";
+
+void mainProcessing(std::string, cv::Mat&, std::string, bool mode = false);
+cv::Mat frameProcessing(cv::Mat&, std::vector<float>);
+
+int main(int argc, char** argv){
+
+    bool mode = false;;
+    if(argc > 1){
+        mode = atoi(argv[1]);
+    }
+    // Modo Imagen
+    if(!mode){
+        cv::Mat src = cv::imread(inputIMG.c_str());
+        cv::Mat out;
+        mainProcessing(inputIMG, out, udpIMG, MODO_IMG);
+
+        cv::resize(out, out, cv::Size(1280, 720));
+        cv::imshow("Result", out);
+        cv::waitKey(0);
+    }
+    // Modo Video
+    else{
+        cv::Mat out;
+	    mainProcessing(inputVID, out, udpVID, MODO_VID);
+    }
+    
+}
+
+void mainProcessing(std::string inputFile, cv::Mat& dst, std::string csvFile, bool mode)
 {
-	//implementacion de prueba solo incluye imagenes por ahora
-	cv::Mat img = (argc == 1) ? cv::imread(defaultIMG) : cv::imread(argv[1]);
+	//Lectura puntos telemetria
+	bool selCSV[] = {true, false, true, true, false, true};
+	readVector readUDP = readFile(csvFile, csvSkip, nColsCSV, selCSV); // lee posición y orientación del auto
+
+	// Modo Imagen
+	if(!mode){
+		cv::Mat src = cv::imread(inputFile.c_str());
+		dst = frameProcessing(src, readUDP[0]);
+	}
+	// Modo Video
+	else{
+		cv::VideoCapture videoFile(inputFile.c_str());
+		double N_frames = (double)videoFile.get(cv::CAP_PROP_FRAME_COUNT);	// numero de frames del video
+		double n_frame = 0.0;
+		std::cout << "Numero Frames = " << N_frames << std::endl;
+		while(true){
+			cv::Mat frame;
+			videoFile >> frame;
+			if(frame.empty()){
+				break;
+			}
+
+			cv::Mat out = frameProcessing(frame, readUDP[(int)n_frame]);
+			n_frame++;
+			int curr_value = (int)(n_frame*100/N_frames);
+
+			cv::imshow("Video", out);
+			char c=(char)cv::waitKey(25);
+			if(c == 27){
+				break;
+			}
+		}
+		videoFile.release();
+		cv::destroyAllWindows();
+	}
+
+	return;
+}
+
+cv::Mat frameProcessing(cv::Mat& img, std::vector<float> readUDP){
+
 	cv::Mat img2 = img.clone(); // copia de imagen para superposición final de la línea de carreras
 	cv::Mat invMatrix; //matriz de proyección inversa
 	cv::Mat crop = projection(img, invMatrix); // ROI con proyección bidimensional
 	cv::Mat X = getEdges(crop); // segmentación de la proyección a imagen binaria
 	std::vector<double> pLeft, pRight;
 	cv::Mat mask = getMask(crop, pLeft, pRight); // imagen con máscara de la pista
-    //####################################################################
+	//####################################################################
 
 	// Mejorar este "diccionario--------------------------------------------
 	std::string trackArray[] = {"silverstone_2020_centerline.track","silverstone_2020_innerlimit.track", "silverstone_2020_outerlimit.track","silverstone_2020_racingline.track"};
 	bool selCols[] = {false, true, true, false, false, false};
-	// ----------------------------------------------------------------------
-	//Lectura puntos telemetria
-	bool selCSV[] = {true, false, true, true, false, true};
-	readVector readUDP = readFile(defaultCSV, csvSkip, nColsCSV, selCSV); // lee posición y orientación del auto
 	//Carga lineas pista
 	Matrix innerLimit(readFile(SILVERPATH + trackArray[1], trackSkip, nColsTrack, selCols));
 	Matrix outerLimit(readFile(SILVERPATH + trackArray[2], trackSkip, nColsTrack, selCols));
 	Matrix raceLine(readFile(SILVERPATH+trackArray[3], trackSkip, nColsTrack, selCols));
 
 	//ventana
-	Matrix wInnerLimit = window(innerLimit, readUDP[0][0], readUDP[0][1], windowRes);
-	Matrix wOuterLimit = window(outerLimit, readUDP[0][0], readUDP[0][1], windowRes);
-	Matrix wRaceLine = window(raceLine, readUDP[0][0], readUDP[0][1], windowRes);
-	rotation(wInnerLimit, readUDP[0][2], readUDP[0][3]);
-	rotation(wOuterLimit, readUDP[0][2], readUDP[0][3]);
-	rotation(wRaceLine, readUDP[0][2], readUDP[0][3]);
+	Matrix wInnerLimit = window(innerLimit, readUDP[0], readUDP[1], windowRes);
+	Matrix wOuterLimit = window(outerLimit, readUDP[0], readUDP[1], windowRes);
+	Matrix wRaceLine = window(raceLine, readUDP[0], readUDP[1], windowRes);
+	rotation(wInnerLimit, readUDP[2], readUDP[3]);
+	rotation(wOuterLimit, readUDP[2], readUDP[3]);
+	rotation(wRaceLine, readUDP[2], readUDP[3]);
 	// Calculo distancia
 	std::vector<double> percentage = manyDistances(wOuterLimit, wInnerLimit, wRaceLine);
 	for (int i = 0; i < percentage.size(); i++){
@@ -76,17 +138,7 @@ int main(int argc, char* argv[])
 
 	// proyeccion inversa
 	cv::Mat retrieval = invProjection(mask, invMatrix, 1);
-
-
-
-	//############### SHOW ##################
-	cv::imwrite("mask.png", mask);
-	cv::imshow("mask", mask);
-
-	// se agrega mascara a imagen de entrada
 	addMask(img2, 1, retrieval, 0.3);
-	cv::imshow("final", retrieval);
-	cv::imwrite("final_detection.png", retrieval);
 
-	cv::waitKey(0);
+	return retrieval;
 }
