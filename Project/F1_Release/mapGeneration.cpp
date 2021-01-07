@@ -137,10 +137,11 @@ void rotation(Matrix& input, float xVal, float zVal){
 
 	//Calculo de cos/sin desde vector de entrada
 	float hypot = sqrt(pow(xVal, 2) + pow(zVal, 2));
-	float a11 =  -zVal/hypot;
-	float a12 = xVal/hypot;
-	float a21 =  -xVal/hypot;
-	float a22 =  -zVal/hypot;
+	// valores de la matriz de rotación
+	float a11 =  -zVal/hypot; // -cos(theta)
+	float a12 = xVal/hypot; // sin(theta)
+	float a21 =  -xVal/hypot; // -sin(theta)
+	float a22 =  -zVal/hypot; // -cos(theta)
 	// Obtencion vectores de Matrix
 	std::vector<float>* Vx = input.getpX();
 	std::vector<float>* Vz = input.getpY();
@@ -159,7 +160,9 @@ Matrix window(Matrix& input, float xVal, float zVal, float epsilon){
 	std::vector<float>* Vz = input.getpY();
 	float distance = 0.0f;
 	for(unsigned int i = 0; i < Vx->size(); i++){
+		// cálculo de distancia radial
 		distance = pow(Vx->at(i)-xVal, 2) + pow(Vz->at(i)-zVal, 2);
+		// solo agregamos puntos que se encuentren dentro de la circunferencia
 		if(distance <= pow(epsilon,2)){
 			retorno.addX(Vx->at(i)-xVal);
 			retorno.addY(Vz->at(i)-zVal);
@@ -168,14 +171,12 @@ Matrix window(Matrix& input, float xVal, float zVal, float epsilon){
 	return retorno;
 }
 
-
 // - Distancia horizontal
-
 std::vector<double> manyDistances(Matrix& leftBorder, Matrix& rightBorder, Matrix& racingLine, int n)
 {
 	//en este caso, x e y representan la posición del auto
 	std::vector<double> retorno;
-	float delta = yRes/n; // FALTA CALIBRAR EL SALTO HACIA ADELANTE!
+	float delta = yRes/n;
 	for(int i = 0; i < n; i ++){
 		retorno.push_back(oneDistance(leftBorder, rightBorder, racingLine, (delta*i)));
 	}
@@ -185,8 +186,7 @@ std::vector<double> manyDistances(Matrix& leftBorder, Matrix& rightBorder, Matri
 
 double oneDistance(Matrix& leftBorder, Matrix& rightBorder, Matrix& racingLine, float y)
 {
-	// en este caso, x e y representan una posición que puede ser la del auto,
-	// pero no necesariamente
+	// en este caso, x e y representan una posición que puede ser la del auto, pero no necesariamente (pueden ser posiciones adelante del auto, al ser llamado en many Distances)
 	std::vector<float> leftBorderX =leftBorder.getX();
 	std::vector<float> leftBorderY =leftBorder.getY();
 	std::vector<float> rightBorderX =rightBorder.getX();
@@ -201,26 +201,29 @@ double oneDistance(Matrix& leftBorder, Matrix& rightBorder, Matrix& racingLine, 
 	float xl = NOTVALID;
 	float xr = NOTVALID;
 	float xRace = NOTVALID;
+	// se definen estos valores para "debugging"
 
+	// identificación de un punto para el borde izquierdo
 	for (unsigned int i = 0; i < leftBorderX.size(); i++){
 		if(((leftBorderY.at(i) - y) < dleft) && (leftBorderY.at(i) >= y)) {
 			dleft = leftBorderY.at(i) - y;
 			xl = leftBorderX.at(i);
 		}
 	}
+	// identificación de un punto para la línea de carreras
 	for (unsigned int i = 0; i < racingX.size(); i++){
 		if(((racingY.at(i) - y) < drace) && (racingY.at(i) >= y)) {
 			drace = racingY.at(i) - y;
 			xRace = racingX.at(i);
 		}
 	}
-
+	// identificación de un punto para el borde derecho
 	for (unsigned int i = 0; i < rightBorderX.size(); i++){
 		if(((rightBorderY.at(i) - y) < dright) && (rightBorderY.at(i) >= y)) {
 			dright = rightBorderY.at(i) - y;
 			xr = rightBorderX.at(i);
 		}
 	}
-	std::cout << "D Transversal"  << xr-xl << std::endl;
+	// std::cout << "D Transversal"  << xr-xl << std::endl;
 	return (double) ((xRace - xl)/(xr - xl));
 }
