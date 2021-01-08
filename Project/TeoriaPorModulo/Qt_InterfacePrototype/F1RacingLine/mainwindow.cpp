@@ -11,38 +11,40 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+	ui->setupUi(this);
 
-    /* Load default track icon */
-    QPixmap imagen;
-    imagen.load("../F1RacingLine/GUI_IMG/icon_track0.jpg");
-    ui->trackViewer->setPixmap(imagen);
+	/* Load default track icon */
+	QPixmap imagen;
+	imagen.load("../F1RacingLine/GUI_IMG/icon_track0.jpg");
+	ui->trackViewer->setPixmap(imagen);
 
-    lwin = new LoadWin();
-    connect(this, SIGNAL(updateBar(int)), lwin->pBar, SLOT(setValue(int)));
+	lwin = new LoadWin();
+	connect(this, SIGNAL(updateBar(int)), lwin->pBar, SLOT(setValue(int)));
 }
 
-
+/* Boton para seleccionar archivo de IMAGEN/VIDEO */
 void MainWindow::on_videoButton_clicked()
 {
 	filename = QFileDialog::getOpenFileName(
 				this, tr("Open File"), "../F1RacingLine/NewTelemtry",
 				tr("Images/Video (*.png *.jpeg *.jpg *.bmp *.mp4 *.mov)"));
-    ui->videoPath->setText(filename);
+	ui->videoPath->setText(filename);
 }
 
+/* Boton para seleccionar archivo CSV/TXT */
 void MainWindow::on_csvButton_clicked()
 {
-    filenameUDP = QFileDialog::getOpenFileName(
+	filenameUDP = QFileDialog::getOpenFileName(
 				this, tr("Open File"), "../F1RacingLine/NewTelemetry",
 				tr("Comma Separted Values (*.csv *.txt)"));
-    ui->csvPath->setText(filenameUDP);
+	ui->csvPath->setText(filenameUDP);
 }
 
+/* Boton de Modo Imagen */
 void MainWindow::on_runButton_clicked()
 {
-    std::string inputIMG = filename.toStdString();
-    cv::Mat out;
+	std::string inputIMG = filename.toStdString();
+	cv::Mat out;
 
 	mainProcessing(inputIMG, out, filenameUDP.toStdString(), MODO_IMG);
 	cv::resize(out, out, cv::Size(1280, 720));
@@ -50,36 +52,39 @@ void MainWindow::on_runButton_clicked()
 	cv::waitKey(0);
 }
 
+/* Boton de Modo Video */
 void MainWindow::on_runvideoButton_clicked()
 {
-    lwin->show();
+	lwin->show();
 	std::string inputIMG = filename.toStdString();
 	cv::Mat out;
 	mainProcessing(inputIMG, out, filenameUDP.toStdString(), MODO_VID);
+	lwin->close();
 }
 
+/* Seleccion de la pista de Carreras (SOLO IMPLEMENTADO PARA SIVLERSTONE) */
 void MainWindow::on_trackSelection_currentIndexChanged(int index)
 {
-    QString file = "../F1RacingLine/GUI_IMG/icon_track";
-    file += QString::number(index) + ".jpg";
+	QString file = "../F1RacingLine/GUI_IMG/icon_track";
+	file += QString::number(index) + ".jpg";
 
-    QPixmap trackIcon;
-    trackIcon.load(file);
-    ui->trackViewer->setPixmap(trackIcon);
+	QPixmap trackIcon;
+	trackIcon.load(file);
+	ui->trackViewer->setPixmap(trackIcon);
 }
 
 void MainWindow::on_actionAbout_this_project_triggered()
 {
-    QMessageBox about;
-    about.setWindowTitle("About This Project");
-    about.setText("Proyecto ELO328 - 2020.S2\n"
-                  "Sistema de Reconocimiento de Pista de F1\n\n"
-                  "Autores: \tMauricio Aravena\n"
-                  "\tDiego Badillo\n"
-                  "\tSteev Gonzalez\n"
-                  "\tSebastian Neira\n"
-                  "\tFelipe Villenas");
-    about.exec();
+	QMessageBox about;
+	about.setWindowTitle("About This Project");
+	about.setText("Proyecto ELO328 - 2020.S2\n"
+					"Sistema de Reconocimiento de Pista de F1\n\n"
+					"Autores: \tMauricio Aravena\n"
+					"\tDiego Badillo\n"
+					"\tSteev Gonzalez\n"
+					"\tSebastian Neira\n"
+					"\tFelipe Villenas");
+	about.exec();
 }
 
 MainWindow::~MainWindow(){ delete ui; }
@@ -104,11 +109,11 @@ void MainWindow::mainProcessing(std::string inputFile, cv::Mat& dst, std::string
 		cv::VideoCapture videoFile(inputFile.c_str());
 		double N_frames = (double)videoFile.get(cv::CAP_PROP_FRAME_COUNT);	// numero de frames del video
 		double n_frame = 0.0;
-        cv::Size S = cv::Size((int)videoFile.get(cv::CAP_PROP_FRAME_WIDTH),(int)videoFile.get(cv::CAP_PROP_FRAME_HEIGHT));
-        double FPS = videoFile.get(cv::CAP_PROP_FPS);
+		cv::Size S = cv::Size((int)videoFile.get(cv::CAP_PROP_FRAME_WIDTH),(int)videoFile.get(cv::CAP_PROP_FRAME_HEIGHT));
+		double FPS = videoFile.get(cv::CAP_PROP_FPS);
 		cv::VideoWriter TEST("out.mp4",cv::VideoWriter::fourcc('m', 'p', '4','v'),FPS,S);
 
-        std::cout << "Numero Frames = " << N_frames << std::endl;
+		std::cout << "Numero Frames = " << N_frames << std::endl;
 		while(true){
 			cv::Mat frame;
 			videoFile >> frame;
@@ -117,10 +122,10 @@ void MainWindow::mainProcessing(std::string inputFile, cv::Mat& dst, std::string
 			}
 
 			cv::Mat out = frameProcessing(frame, readUDP[(int)n_frame]);
-            TEST << out;
+			TEST << out;
 			n_frame++;
 			int curr_value = (int)(n_frame*100/N_frames);
-            emit updateBar(curr_value);
+			emit updateBar(curr_value);
 			cv::imshow("Video", out);
 			char c=(char)cv::waitKey(25);
 			if(c == 27){

@@ -40,7 +40,7 @@ void calculateHistogram(cv::Mat& X, int* xL, int* xR) {
 std::vector<double> detectLine(cv::Mat& X, int x0, int w, int h) {
 
 	int rows = X.rows;
-    int cols = X.cols;
+	int cols = X.cols;
 
 	int X0 = x0;
 
@@ -132,7 +132,7 @@ cv::Mat getMask(cv::Mat img, std::vector<double>& p1, std::vector<double>& p2)
 	int xR = 0;
 
 	calculateHistogram(X, &xL, &xR);
-    //std::cout << xL << "," << xR << std::endl;
+	//std::cout << xL << "," << xR << std::endl;
 
 	p1 = detectLine(X, xL, 0.1 * X.cols, 0.1 * X.rows);
 	p2 = detectLine(X, xR, 0.1 * X.cols, 0.1 * X.rows);
