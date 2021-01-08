@@ -25,9 +25,11 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::on_videoButton_clicked()
 {
+
 	filename = QFileDialog::getOpenFileName(
 				this, tr("Open File"), "../F1RacingLine/NewTelemtry",
 				tr("Images/Video (*.png *.jpeg *.jpg *.bmp *.mp4 *.mov)"));
+
     ui->videoPath->setText(filename);
 }
 
@@ -58,6 +60,12 @@ void MainWindow::on_runvideoButton_clicked()
 	mainProcessing(inputIMG, out, filenameUDP.toStdString(), MODO_VID);
 }
 
+void MainWindow::on_runvideoButton_clicked()
+{
+    lwin->show();
+    emit updateBar(12);
+}
+
 void MainWindow::on_trackSelection_currentIndexChanged(int index)
 {
     QString file = "../F1RacingLine/GUI_IMG/icon_track";
@@ -86,6 +94,7 @@ MainWindow::~MainWindow(){ delete ui; }
 void MainWindow::on_exitButton_clicked(){ this->close(); }
 void MainWindow::on_videoPath_textChanged(const QString &arg1){ filename = arg1; }
 void MainWindow::on_csvPath_textChanged(const QString &arg1){ filenameUDP = arg1; }
+
 
 /* --------------- Metodos ---------------------- */
 void MainWindow::mainProcessing(std::string inputFile, cv::Mat& dst, std::string csvFile, bool mode)
