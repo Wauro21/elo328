@@ -77,6 +77,4 @@ Dentro de los archivos del release vienen incluídas las imágenes y video de pr
 
 ### 2.2 Ejemplo de procesamiento: Vídeo
 
-<figure class="video_container">
-  <iframe src="https://youtu.be/Dbv4ch5B5ps" frameborder="0" allowfullscreen="true"> </iframe>
-</figure>
+[![Demo video](http://img.youtube.com/vi/Dbv4ch5B5ps/0.jpg)](http://www.youtube.com/watch?v=Dbv4ch5B5ps "Demo Video")
