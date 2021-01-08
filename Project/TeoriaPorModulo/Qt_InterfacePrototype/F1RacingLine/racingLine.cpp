@@ -1,16 +1,60 @@
 #include "racingLine.h"
 
-std::vector<double> getDistances(cv::Mat X, std::vector<double> p1left, std::vector<double> p2right, int n)
+std::vector<cv::Point> getDistances(cv::Mat X, std::vector<double> percentage, std::vector<double> p1left, std::vector<double> p2right, int n)
 {
-	double dif = (double)X.rows / n; //para X de altura 647, 64.7 con n=10
+	double dif = (double)X.rows / n; //para X de altura 647, 64.7 con n=10 969x647
 	std::vector<double> returnVector;
 	double distance;
+	std::vector<cv::Point> returnV2;
+	double raceLineY;
+
 
 	for (int i = 0; i < n; i++) {
-		double x = i * dif;
+		double x = n*dif - i * dif;
+		// x toma valores en incrementos de "dif"
+		/*
+		if (p2right[2] * x * x + p2right[1] * x + p2right[0] > 969
+			|| p1left[2] * x * x + p1left[1] * x + p1left[0] < 0) {
+			returnVector.push_back(-1);
+			continue;
+		}
+		*/
+		// distance: calcular distancia entre polinomios evaluados en x
 		distance = p2right[2] * x * x + p2right[1] * x + p2right[0] - (p1left[2] * x * x + p1left[1] * x + p1left[0]);
 		returnVector.push_back(distance);
+		raceLineY = (p1left[2] * x * x + p1left[1] * x + p1left[0]) + percentage.at(i) * distance;
+		// la línea de carreras es posicionada al mismo porcentaje calculado para la pista almacenada y telemetría
+		returnV2.push_back(cv::Point(x,raceLineY));
+	}
+	return returnV2;
+}
+
+std::vector<double> racingPoly(std::vector<cv::Point> racingPoints)
+{
+	std::vector<double> polyValues;
+	std::vector<double>* dataY = new std::vector<double>;
+	std::vector<double>* dataX = new std::vector<double>;
+	// dataY y dataX almacenan las coordenadas de la línea de carreras en píxeles para luego hacer la regresión polinomial
+	for (unsigned int i = 0; i < racingPoints.size(); i++) {
+		dataY->push_back(racingPoints[i].x);
+		dataX->push_back(racingPoints[i].y);
 	}
 
-	return returnVector;
+	PolynomialRegression<double> polyfit;
+	polyfit.fitIt(*dataY, *dataX, 2, polyValues);
+
+	return polyValues;
+}
+
+void drawRacingLine(cv::Mat& X, std::vector<double> polyValues, int widthRacingLine)
+{
+	std::vector<cv::Point> raceLine;
+	double res = 0.0d;
+	for(int i = 0; i < X.rows; i++){
+		res = polyValues[0] + polyValues[1]*i + polyValues[2]*(i*i);
+		raceLine.push_back(cv::Point((int)res,i));
+	}
+	cv::polylines(X, raceLine, 0, cv::Scalar(0, 0, 255), widthRacingLine);
+
+
 }

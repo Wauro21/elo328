@@ -11,14 +11,19 @@ std::vector<cv::Point> getDistances(cv::Mat X, std::vector<double> percentage, s
 
 	for (int i = 0; i < n; i++) {
 		double x = n*dif - i * dif;
+		// x toma valores en incrementos de "dif"
+		/*
 		if (p2right[2] * x * x + p2right[1] * x + p2right[0] > 969
 			|| p1left[2] * x * x + p1left[1] * x + p1left[0] < 0) {
 			returnVector.push_back(-1);
 			continue;
 		}
+		*/
+		// distance: calcular distancia entre polinomios evaluados en x
 		distance = p2right[2] * x * x + p2right[1] * x + p2right[0] - (p1left[2] * x * x + p1left[1] * x + p1left[0]);
 		returnVector.push_back(distance);
 		raceLineY = (p1left[2] * x * x + p1left[1] * x + p1left[0]) + percentage.at(i) * distance;
+		// la línea de carreras es posicionada al mismo porcentaje calculado para la pista almacenada y telemetría
 		returnV2.push_back(cv::Point(x,raceLineY));
 	}
 	return returnV2;
@@ -29,7 +34,7 @@ std::vector<double> racingPoly(std::vector<cv::Point> racingPoints)
 	std::vector<double> polyValues;
 	std::vector<double>* dataY = new std::vector<double>;
 	std::vector<double>* dataX = new std::vector<double>;
-
+	// dataY y dataX almacenan las coordenadas de la línea de carreras en píxeles para luego hacer la regresión polinomial
 	for (unsigned int i = 0; i < racingPoints.size(); i++) {
 		dataY->push_back(racingPoints[i].x);
 		dataX->push_back(racingPoints[i].y);

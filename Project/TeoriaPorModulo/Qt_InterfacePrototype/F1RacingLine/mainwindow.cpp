@@ -5,12 +5,7 @@
 #include <QMessageBox>
 #include <QLabel>
 #include <QGridLayout>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/types_c.h>
-#include "mainProcessing.cpp"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -30,34 +25,39 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::on_videoButton_clicked()
 {
-    filename = QFileDialog::getOpenFileName(
-                this, tr("Open File"), "../F1RacingLine/Dataset/img",
-                tr("Images-Video (*.png *.jpeg *.jpg *.bmp *.mov)"));
+
+	filename = QFileDialog::getOpenFileName(
+				this, tr("Open File"), "../F1RacingLine/NewTelemtry",
+				tr("Images/Video (*.png *.jpeg *.jpg *.bmp *.mp4 *.mov)"));
+
     ui->videoPath->setText(filename);
 }
 
 void MainWindow::on_csvButton_clicked()
 {
     filenameUDP = QFileDialog::getOpenFileName(
-                this, tr("Open File"), "../F1RacingLine/Dataset/csv",
-                tr("Comma Separted Values (*.csv)"));
+				this, tr("Open File"), "../F1RacingLine/NewTelemetry",
+				tr("Comma Separted Values (*.csv *.txt)"));
     ui->csvPath->setText(filenameUDP);
 }
 
 void MainWindow::on_runButton_clicked()
 {
     std::string inputIMG = filename.toStdString();
-    cv::Mat img = cv::imread(inputIMG.c_str());
     cv::Mat out;
-    if(img.empty()){
-        std::cerr << "Error opening image" << std::endl;
-    }
-    else{
-        //cv::imshow("Input Image", img);
-        mainProcessing(img, out);
-        cv::imshow("Result", out);
-        cv::waitKey(0);
-    }
+
+	mainProcessing(inputIMG, out, filenameUDP.toStdString(), MODO_IMG);
+	cv::resize(out, out, cv::Size(1280, 720));
+	cv::imshow("Result", out);
+	cv::waitKey(0);
+}
+
+void MainWindow::on_runvideoButton_clicked()
+{
+    lwin->show();
+	std::string inputIMG = filename.toStdString();
+	cv::Mat out;
+	mainProcessing(inputIMG, out, filenameUDP.toStdString(), MODO_VID);
 }
 
 void MainWindow::on_runvideoButton_clicked()
@@ -94,4 +94,89 @@ MainWindow::~MainWindow(){ delete ui; }
 void MainWindow::on_exitButton_clicked(){ this->close(); }
 void MainWindow::on_videoPath_textChanged(const QString &arg1){ filename = arg1; }
 void MainWindow::on_csvPath_textChanged(const QString &arg1){ filenameUDP = arg1; }
+
+
+/* --------------- Metodos ---------------------- */
+void MainWindow::mainProcessing(std::string inputFile, cv::Mat& dst, std::string csvFile, bool mode)
+{
+	//Lectura puntos telemetria
+	bool selCSV[] = {true, false, true, true, false, true};
+	readVector readUDP = readFile(csvFile, csvSkip, nColsCSV, selCSV); // lee posición y orientación del auto
+
+	// Modo Imagen
+	if(!mode){
+		cv::Mat src = cv::imread(inputFile.c_str());
+		dst = frameProcessing(src, readUDP[0]);
+	}
+	// Modo Video
+	else{
+		cv::VideoCapture videoFile(inputFile.c_str());
+		double N_frames = (double)videoFile.get(cv::CAP_PROP_FRAME_COUNT);	// numero de frames del video
+		double n_frame = 0.0;
+		std::cout << "Numero Frames = " << N_frames << std::endl;
+		while(true){
+			cv::Mat frame;
+			videoFile >> frame;
+			if(frame.empty()){
+				break;
+			}
+
+			cv::Mat out = frameProcessing(frame, readUDP[(int)n_frame]);
+			n_frame++;
+			int curr_value = (int)(n_frame*100/N_frames);
+			emit updateBar(curr_value);
+
+			cv::imshow("Video", out);
+			char c=(char)cv::waitKey(25);
+			if(c == 27){
+				break;
+			}
+		}
+		videoFile.release();
+		cv::destroyAllWindows();
+	}
+
+	return;
+}
+
+cv::Mat MainWindow::frameProcessing(cv::Mat& img, std::vector<float> readUDP){
+
+	cv::Mat img2 = img.clone(); // copia de imagen para superposición final de la línea de carreras
+	cv::Mat invMatrix; //matriz de proyección inversa
+	cv::Mat crop = projection(img, invMatrix); // ROI con proyección bidimensional
+	cv::Mat X = getEdges(crop); // segmentación de la proyección a imagen binaria
+	std::vector<double> pLeft, pRight;
+	cv::Mat mask = getMask(crop, pLeft, pRight); // imagen con máscara de la pista
+	//####################################################################
+
+	// Mejorar este "diccionario--------------------------------------------
+	std::string trackArray[] = {"silverstone_2020_centerline.track","silverstone_2020_innerlimit.track", "silverstone_2020_outerlimit.track","silverstone_2020_racingline.track"};
+	bool selCols[] = {false, true, true, false, false, false};
+	//Carga lineas pista
+	Matrix innerLimit(readFile(SILVERPATH + trackArray[1], trackSkip, nColsTrack, selCols));
+	Matrix outerLimit(readFile(SILVERPATH + trackArray[2], trackSkip, nColsTrack, selCols));
+	Matrix raceLine(readFile(SILVERPATH+trackArray[3], trackSkip, nColsTrack, selCols));
+
+	//ventana
+	Matrix wInnerLimit = Mwindow(innerLimit, readUDP[0], readUDP[1], windowRes);
+	Matrix wOuterLimit = Mwindow(outerLimit, readUDP[0], readUDP[1], windowRes);
+	Matrix wRaceLine = Mwindow(raceLine, readUDP[0], readUDP[1], windowRes);
+	rotation(wInnerLimit, readUDP[2], readUDP[3]);
+	rotation(wOuterLimit, readUDP[2], readUDP[3]);
+	rotation(wRaceLine, readUDP[2], readUDP[3]);
+	// Calculo distancia
+	std::vector<double> percentage = manyDistances(wOuterLimit, wInnerLimit, wRaceLine);
+	for (int i = 0; i < percentage.size(); i++){
+		std::cout << percentage[i] << std::endl;
+	}
+	std::vector<cv::Point> racingPoints = getDistances(mask, percentage, pLeft, pRight);
+	std::vector<double> racePoly = racingPoly(racingPoints);
+	drawRacingLine(mask, racePoly);
+
+	// proyeccion inversa
+	cv::Mat retrieval = invProjection(mask, invMatrix, 1);
+	addMask(img2, 1, retrieval, 0.3);
+
+	return retrieval;
+}
 

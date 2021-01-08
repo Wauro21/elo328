@@ -11,7 +11,7 @@
 #define offsetz 2.64
 #define offsetx	0
 
-namespace plt = matplotlibcpp;
+//namespace plt = matplotlibcpp;
 // Leer archivo
 
 readVector readFile(std::string nameFile, int nSkip, int nCols, bool* indexes){
@@ -70,62 +70,62 @@ void printVector(readVector toPrint){
 // Plotear - Wrapper
 
 
-void plotXZ(Matrix input, std::string name, std::string style){
-	plt::named_plot(name, input.getX(), input.getY(), style);
-}
+// void plotXZ(Matrix input, std::string name, std::string style){
+// 	plt::named_plot(name, input.getX(), input.getY(), style);
+// }
 
 
 
 // - Defecto silverstone
 
-void plotSilverstone(bool center, bool racingLine, std::string saveName){
-	// Nombres archivos
-	std::string trackArray[] = {"silverstone_2020_centerline.track","silverstone_2020_innerlimit.track", "silverstone_2020_outerlimit.track","silverstone_2020_racingline.track"};
-	bool selCols[] = {false, true, true, false, false, false};
-	//Valores de pista
-	Matrix centerline(readFile(SILVERPATH+trackArray[0],2,6,selCols));
-	Matrix innerLimit(readFile(SILVERPATH+trackArray[1],2,6,selCols));
-	Matrix outerLimit(readFile(SILVERPATH+trackArray[2],2,6,selCols));
-	Matrix raceLine(readFile(SILVERPATH+trackArray[3],2,6,selCols));
-	//window
-	Matrix wCenterline = window(centerline,debX ,debZ, windowRes);
-	Matrix wInnerLimit = window(innerLimit,debX ,debZ, windowRes);
-	Matrix wOuterLimit = window(outerLimit,debX ,debZ, windowRes);
-	Matrix wRaceLine = window(raceLine,debX ,debZ, windowRes);
-	//rotation
-	rotation(wCenterline, vX, vZ);
-	rotation(wInnerLimit,vX, vZ);
-	rotation(wOuterLimit,vX, vZ);
-	rotation(wRaceLine,vX, vZ);
-	//plt::figure_size(1920, 1080);
-	//TEMP
-	std::vector<double> test = manyDistances(wOuterLimit, wInnerLimit, wRaceLine);
-	for(unsigned int i = 0; i < test.size(); i++){
-		std::cout << test.at(i) << std::endl;
-	}
-	plotXZ(wInnerLimit, "innerLimit", "b-");
-	plotXZ(wOuterLimit, "outerLimit", "g-");
-	if(center){
-		plotXZ(wCenterline, "centerline", "k-");
-	}
-	if(racingLine){
-		plotXZ(wRaceLine, "racingLine", "m-");
-	}
-
-
-
-	std::vector<double> testX;
-	std::vector<double> testZ;
-	testX.push_back(0);
-	testZ.push_back(0);
-	plt::plot(testX, testZ, {{"c", "red"}, {"marker", "o"}});
-	plt::title("Pista: silverstone");
-	plt::legend();
-	if(saveName.length() != 0){
-		plt::save(saveName+".png");
-	}
-	plt::show();
-}
+// void plotSilverstone(bool center, bool racingLine, std::string saveName){
+// 	// Nombres archivos
+// 	std::string trackArray[] = {"silverstone_2020_centerline.track","silverstone_2020_innerlimit.track", "silverstone_2020_outerlimit.track","silverstone_2020_racingline.track"};
+// 	bool selCols[] = {false, true, true, false, false, false};
+// 	//Valores de pista
+// 	Matrix centerline(readFile(SILVERPATH+trackArray[0],2,6,selCols));
+// 	Matrix innerLimit(readFile(SILVERPATH+trackArray[1],2,6,selCols));
+// 	Matrix outerLimit(readFile(SILVERPATH+trackArray[2],2,6,selCols));
+// 	Matrix raceLine(readFile(SILVERPATH+trackArray[3],2,6,selCols));
+// 	//window
+// 	Matrix wCenterline = window(centerline,debX ,debZ, windowRes);
+// 	Matrix wInnerLimit = window(innerLimit,debX ,debZ, windowRes);
+// 	Matrix wOuterLimit = window(outerLimit,debX ,debZ, windowRes);
+// 	Matrix wRaceLine = window(raceLine,debX ,debZ, windowRes);
+// 	//rotation
+// 	rotation(wCenterline, vX, vZ);
+// 	rotation(wInnerLimit,vX, vZ);
+// 	rotation(wOuterLimit,vX, vZ);
+// 	rotation(wRaceLine,vX, vZ);
+// 	//plt::figure_size(1920, 1080);
+// 	//TEMP
+// 	std::vector<double> test = manyDistances(wOuterLimit, wInnerLimit, wRaceLine);
+// 	for(unsigned int i = 0; i < test.size(); i++){
+// 		std::cout << test.at(i) << std::endl;
+// 	}
+// 	plotXZ(wInnerLimit, "innerLimit", "b-");
+// 	plotXZ(wOuterLimit, "outerLimit", "g-");
+// 	if(center){
+// 		plotXZ(wCenterline, "centerline", "k-");
+// 	}
+// 	if(racingLine){
+// 		plotXZ(wRaceLine, "racingLine", "m-");
+// 	}
+//
+//
+//
+// 	std::vector<double> testX;
+// 	std::vector<double> testZ;
+// 	testX.push_back(0);
+// 	testZ.push_back(0);
+// 	plt::plot(testX, testZ, {{"c", "red"}, {"marker", "o"}});
+// 	plt::title("Pista: silverstone");
+// 	plt::legend();
+// 	if(saveName.length() != 0){
+// 		plt::save(saveName+".png");
+// 	}
+// 	plt::show();
+// }
 
 // - Aplicar rotacion y traslacion
 void rotation(Matrix& input, float xVal, float zVal){
@@ -137,10 +137,11 @@ void rotation(Matrix& input, float xVal, float zVal){
 
 	//Calculo de cos/sin desde vector de entrada
 	float hypot = sqrt(pow(xVal, 2) + pow(zVal, 2));
-	float a11 =  -zVal/hypot;
-	float a12 = xVal/hypot;
-	float a21 =  -xVal/hypot;
-	float a22 =  -zVal/hypot;
+	// valores de la matriz de rotación
+	float a11 =  -zVal/hypot; // -cos(theta)
+	float a12 = xVal/hypot; // sin(theta)
+	float a21 =  -xVal/hypot; // -sin(theta)
+	float a22 =  -zVal/hypot; // -cos(theta)
 	// Obtencion vectores de Matrix
 	std::vector<float>* Vx = input.getpX();
 	std::vector<float>* Vz = input.getpY();
@@ -159,7 +160,9 @@ Matrix window(Matrix& input, float xVal, float zVal, float epsilon){
 	std::vector<float>* Vz = input.getpY();
 	float distance = 0.0f;
 	for(unsigned int i = 0; i < Vx->size(); i++){
+		// cálculo de distancia radial
 		distance = pow(Vx->at(i)-xVal, 2) + pow(Vz->at(i)-zVal, 2);
+		// solo agregamos puntos que se encuentren dentro de la circunferencia
 		if(distance <= pow(epsilon,2)){
 			retorno.addX(Vx->at(i)-xVal);
 			retorno.addY(Vz->at(i)-zVal);
@@ -168,14 +171,12 @@ Matrix window(Matrix& input, float xVal, float zVal, float epsilon){
 	return retorno;
 }
 
-
 // - Distancia horizontal
-
 std::vector<double> manyDistances(Matrix& leftBorder, Matrix& rightBorder, Matrix& racingLine, int n)
 {
 	//en este caso, x e y representan la posición del auto
 	std::vector<double> retorno;
-	float delta = yRes/n; // FALTA CALIBRAR EL SALTO HACIA ADELANTE!
+	float delta = yRes/n;
 	for(int i = 0; i < n; i ++){
 		retorno.push_back(oneDistance(leftBorder, rightBorder, racingLine, (delta*i)));
 	}
@@ -185,8 +186,7 @@ std::vector<double> manyDistances(Matrix& leftBorder, Matrix& rightBorder, Matri
 
 double oneDistance(Matrix& leftBorder, Matrix& rightBorder, Matrix& racingLine, float y)
 {
-	// en este caso, x e y representan una posición que puede ser la del auto,
-	// pero no necesariamente
+	// en este caso, x e y representan una posición que puede ser la del auto, pero no necesariamente (pueden ser posiciones adelante del auto, al ser llamado en many Distances)
 	std::vector<float> leftBorderX =leftBorder.getX();
 	std::vector<float> leftBorderY =leftBorder.getY();
 	std::vector<float> rightBorderX =rightBorder.getX();
@@ -201,26 +201,29 @@ double oneDistance(Matrix& leftBorder, Matrix& rightBorder, Matrix& racingLine, 
 	float xl = NOTVALID;
 	float xr = NOTVALID;
 	float xRace = NOTVALID;
+	// se definen estos valores para "debugging"
 
+	// identificación de un punto para el borde izquierdo
 	for (unsigned int i = 0; i < leftBorderX.size(); i++){
 		if(((leftBorderY.at(i) - y) < dleft) && (leftBorderY.at(i) >= y)) {
 			dleft = leftBorderY.at(i) - y;
 			xl = leftBorderX.at(i);
 		}
 	}
+	// identificación de un punto para la línea de carreras
 	for (unsigned int i = 0; i < racingX.size(); i++){
 		if(((racingY.at(i) - y) < drace) && (racingY.at(i) >= y)) {
 			drace = racingY.at(i) - y;
 			xRace = racingX.at(i);
 		}
 	}
-
+	// identificación de un punto para el borde derecho
 	for (unsigned int i = 0; i < rightBorderX.size(); i++){
 		if(((rightBorderY.at(i) - y) < dright) && (rightBorderY.at(i) >= y)) {
 			dright = rightBorderY.at(i) - y;
 			xr = rightBorderX.at(i);
 		}
 	}
-	std::cout << "D Transversal"  << xr-xl << std::endl;
+	// std::cout << "D Transversal"  << xr-xl << std::endl;
 	return (double) ((xRace - xl)/(xr - xl));
 }

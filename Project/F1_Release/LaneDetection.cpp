@@ -145,7 +145,7 @@ cv::Mat getMask(cv::Mat img, std::vector<double>& p1, std::vector<double>& p2)
 	if(!p1.empty() && !p2.empty()){
 		polyEval(X.rows, leftLane, rightLane, laneArea, p1, p2);
 
-        std::vector<std::vector<cv::Point>> polygons;  // por alguna razon tuve que hacer esto para que me funcionara en Ubuntu
+        std::vector<std::vector<cv::Point>> polygons;  
         polygons.push_back(laneArea);
 
         cv::fillPoly(lines, polygons, cv::Scalar(0, 200, 0));

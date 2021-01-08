@@ -3,7 +3,7 @@
 
 /*
  * Proyecto ELO328 - 2020.S2 - G1
- * Modulo de Proyeccion de Pista
+ * Modulo de proyeccion de pista
  * Autor: Diego Badillo - 06/12/2020
  */
 
@@ -17,11 +17,31 @@
 
 #define ATTEMPTS 1
 
+/*---------------------------------------------------------------------------*/
+/*
+ * @brief       : proyección a vista "bird's eye"  (vista superior)
+ * @param in    : matriz fuente
+ * @param invMatrix: matriz de proyección inversa (3x3) (se almacena para su uso posterior)
+ * @param save  : 1 si se quiere guardar resultado como .png, 0 para no guardar
+ * @return      : imagen proyectada
+ */
 cv::Mat projection(cv::Mat in, cv::Mat& invMatrix, int save = 0);
-// genera proyeccion geometrica en perspectiva "bird's eye"
+/*---------------------------------------------------------------------------*/
+/*
+ * @brief       : proyección inversa (desde vista "bird's eye") a perspectiva del piloto
+ * @param in    : matriz fuente
+ * @param invMatrix: matriz de proyección inversa (3x3)
+ * @param save  : 1 si se quiere guardar resultado como .png, 0 para no guardar
+ * @return      : imagen proyectada
+ */
 cv::Mat invProjection(cv::Mat in, cv::Mat invMatrix, int save = 0);
-// genera proyeccion inversa
+/*---------------------------------------------------------------------------*/
+/*
+ * @brief       : segmentación mediante k-means (función deprueba, no usada)
+ * @param in    : matriz fuente
+ * @param n     : número de clusters
+ * @return      : imagen segmentada
+ */
 cv::Mat kMeans(cv::Mat in, int n);
-// segmenta imagen mediante algoritmo de k means (prueba)
-
+/*---------------------------------------------------------------------------*/
 #endif /* PROJECTION_H */

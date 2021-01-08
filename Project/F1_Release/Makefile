@@ -3,7 +3,7 @@ DEPENDENCIES = polyfit.h LaneDetection.h Projection.h racingLine.h segFunctions.
 DEPCPP = LaneDetection.cpp Projection.cpp racingLine.cpp segFunctions.cpp Matrix.cpp mapGeneration.cpp
 
 OPENCV = `pkg-config --cflags --libs opencv4`
-PYTHON = -I/usr/include/python3.6 -lpython3.6m
+#PYTHON = -I/usr/include/python3.6 -lpython3.6m
 FLAGS = -Wall -Wextra
 
 INPUT = main.cpp
@@ -13,7 +13,7 @@ default: build
 
 
 build: $(DEPENDENCIES) $(DEPCPP)
-	g++ $(FLAGS) -o $(OUTPUT) $(INPUT) $(DEPCPP) $(OPENCV) $(PYTHON)
+	g++ $(FLAGS) -o $(OUTPUT) $(INPUT) $(DEPCPP) $(OPENCV) #$(PYTHON)
 
 clean: $(OUTPUT)
 	rm $(OUTPUT)
