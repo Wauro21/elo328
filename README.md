@@ -14,6 +14,7 @@
     + [Pre-requisito: Qt Creator](#111-pre-requisito-qt-creator)
     + [Pre-requisito: OpenCV](#112-pre-requisito-opencv)
     + [Compilación y Ejecución](#113-compilación-y-ejecución)
+    + [Dataset](#114-dataset)
 - [Guía de Uso](#2-guía-de-uso)
 ## 1. Instalación
 
@@ -49,6 +50,9 @@ Luego, en la siguiente figura se muestra como compilar y ejecutar el programa de
  
   ![Vista de interfaz del IDE Qt Creator](/Project/zImagenesDoc/qt_run.png)
 </details>
+
+#### 1.1.4. Dataset
+Dentro de los archivos del release vienen incluídas las imágenes y video de prueba, junto con los respectivos archivos de telemetría en formato `*.csv` y `*.txt`. Las imágenes de prueba están enumeradas del 0 hacia adelante, y también se incluyen sus respectivas versiones con la línea de carrera mostrada dentro del videojuego para realizar comparaciones con el funcionamiento del algoritmo de procesamiento. Dichos archivos con la línea tienen una `w` después del número. Los archivos de telemetría correspondientes poseen el mismo número de la imagen a la cual le corresponden, por ejemplo, imagen `0.jpg` y su archivo de telemetría `0.csv`. En el caso del video de prueba, este se llama `redbull.mp4` y su archivo de telemetría `redbull.txt`.
 
 ---
 
