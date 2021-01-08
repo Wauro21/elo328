@@ -51,7 +51,7 @@ cv::Mat getEdges(cv::Mat crop)
 	//test: aplicar morfologia antes de segmentar para lograr uniformidad en el asfalto
 	cv::Mat test;
 	cv::Mat testCanny;
-	opening(crop, test, 5, 8);
+	opening(crop, test, 3, 7);
 	cv::cvtColor(test, test, cv::COLOR_BGR2GRAY);
 
 	cv::Canny(test, testCanny, 150, 40);

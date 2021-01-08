@@ -28,7 +28,6 @@
 #define MODO_IMG false
 #define MODO_VID true
 
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -57,15 +56,11 @@ private slots:
     void on_csvPath_textChanged(const QString &arg1);
     void on_runvideoButton_clicked();
 
-    void on_runvideoButton_clicked();
-
 private:
     Ui::MainWindow *ui;
     LoadWin *lwin;
-
 	void mainProcessing(std::string, cv::Mat&, std::string, bool mode = false);
 	cv::Mat frameProcessing(cv::Mat&, std::vector<float>);
-
 
 };
 #endif // MAINWINDOW_H

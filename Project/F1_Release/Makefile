@@ -17,4 +17,4 @@ build: $(DEPENDENCIES) $(DEPCPP)
 
 clean: $(OUTPUT)
 	rm $(OUTPUT)
-	rm *.png
+	#rm *.png

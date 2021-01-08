@@ -7,7 +7,7 @@ cv::Mat projection(cv::Mat in, cv::Mat& invMatrix, int save)
 
 	// Valores de ROI obtenidos empíricamente. Para formar el trapecio que servirá para generar la matrix inversa, se calibra usando una imagen que contenga una sección de la pista recta.
 	float hRoi = floor(0.24 * height);
-	float wRoi = 1.0 * width;
+	float wRoi = 1.01 * width;
 	float infL = wRoi / 2 - 0.046 * width;
 	float infR = wRoi / 2 + 0.046 * width;
 	float datasrc[8] = { 0, hRoi, wRoi, hRoi, 0, 0, wRoi, 0 };

@@ -25,11 +25,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::on_videoButton_clicked()
 {
-
 	filename = QFileDialog::getOpenFileName(
 				this, tr("Open File"), "../F1RacingLine/NewTelemtry",
 				tr("Images/Video (*.png *.jpeg *.jpg *.bmp *.mp4 *.mov)"));
-
     ui->videoPath->setText(filename);
 }
 
@@ -58,12 +56,6 @@ void MainWindow::on_runvideoButton_clicked()
 	std::string inputIMG = filename.toStdString();
 	cv::Mat out;
 	mainProcessing(inputIMG, out, filenameUDP.toStdString(), MODO_VID);
-}
-
-void MainWindow::on_runvideoButton_clicked()
-{
-    lwin->show();
-    emit updateBar(12);
 }
 
 void MainWindow::on_trackSelection_currentIndexChanged(int index)
@@ -95,7 +87,6 @@ void MainWindow::on_exitButton_clicked(){ this->close(); }
 void MainWindow::on_videoPath_textChanged(const QString &arg1){ filename = arg1; }
 void MainWindow::on_csvPath_textChanged(const QString &arg1){ filenameUDP = arg1; }
 
-
 /* --------------- Metodos ---------------------- */
 void MainWindow::mainProcessing(std::string inputFile, cv::Mat& dst, std::string csvFile, bool mode)
 {
@@ -113,7 +104,11 @@ void MainWindow::mainProcessing(std::string inputFile, cv::Mat& dst, std::string
 		cv::VideoCapture videoFile(inputFile.c_str());
 		double N_frames = (double)videoFile.get(cv::CAP_PROP_FRAME_COUNT);	// numero de frames del video
 		double n_frame = 0.0;
-		std::cout << "Numero Frames = " << N_frames << std::endl;
+        cv::Size S = cv::Size((int)videoFile.get(cv::CAP_PROP_FRAME_WIDTH),(int)videoFile.get(cv::CAP_PROP_FRAME_HEIGHT));
+        double FPS = videoFile.get(cv::CAP_PROP_FPS);
+		cv::VideoWriter TEST("out.mp4",cv::VideoWriter::fourcc('m', 'p', '4','v'),FPS,S);
+
+        std::cout << "Numero Frames = " << N_frames << std::endl;
 		while(true){
 			cv::Mat frame;
 			videoFile >> frame;
@@ -122,10 +117,10 @@ void MainWindow::mainProcessing(std::string inputFile, cv::Mat& dst, std::string
 			}
 
 			cv::Mat out = frameProcessing(frame, readUDP[(int)n_frame]);
+            TEST << out;
 			n_frame++;
 			int curr_value = (int)(n_frame*100/N_frames);
-			emit updateBar(curr_value);
-
+            emit updateBar(curr_value);
 			cv::imshow("Video", out);
 			char c=(char)cv::waitKey(25);
 			if(c == 27){
@@ -179,4 +174,3 @@ cv::Mat MainWindow::frameProcessing(cv::Mat& img, std::vector<float> readUDP){
 
 	return retrieval;
 }
-

@@ -58,7 +58,7 @@ int main(int argc, char** argv){
         cv::Mat out;
 	    mainProcessing(inputVID, out, udpVID, MODO_VID);
     }
-    
+
 }
 
 void mainProcessing(std::string inputFile, cv::Mat& dst, std::string csvFile, bool mode)
@@ -77,7 +77,11 @@ void mainProcessing(std::string inputFile, cv::Mat& dst, std::string csvFile, bo
 		cv::VideoCapture videoFile(inputFile.c_str());
 		double N_frames = (double)videoFile.get(cv::CAP_PROP_FRAME_COUNT);	// numero de frames del video
 		double n_frame = 0.0;
-		std::cout << "Numero Frames = " << N_frames << std::endl;
+        cv::Size S = cv::Size((int)videoFile.get(cv::CAP_PROP_FRAME_WIDTH),(int)videoFile.get(cv::CAP_PROP_FRAME_HEIGHT));
+        double FPS = videoFile.get(cv::CAP_PROP_FPS);
+		cv::VideoWriter TEST("out.mp4",cv::VideoWriter::fourcc('m', 'p', '4','v'),FPS,S);
+
+        std::cout << "Numero Frames = " << N_frames << std::endl;
 		while(true){
 			cv::Mat frame;
 			videoFile >> frame;
@@ -86,6 +90,7 @@ void mainProcessing(std::string inputFile, cv::Mat& dst, std::string csvFile, bo
 			}
 
 			cv::Mat out = frameProcessing(frame, readUDP[(int)n_frame]);
+            TEST << out;
 			n_frame++;
 			int curr_value = (int)(n_frame*100/N_frames);
 
@@ -129,9 +134,6 @@ cv::Mat frameProcessing(cv::Mat& img, std::vector<float> readUDP){
 	rotation(wRaceLine, readUDP[2], readUDP[3]);
 	// Calculo distancia
 	std::vector<double> percentage = manyDistances(wOuterLimit, wInnerLimit, wRaceLine);
-	for (int i = 0; i < percentage.size(); i++){
-		std::cout << percentage[i] << std::endl;
-	}
 	std::vector<cv::Point> racingPoints = getDistances(mask, percentage, pLeft, pRight);
 	std::vector<double> racePoly = racingPoly(racingPoints);
 	drawRacingLine(mask, racePoly);
