@@ -18,7 +18,7 @@
 - [Guía de Uso](#2-guía-de-uso)
 ## 1. Instalación
 
-### 1.1. Instalación desde el Código Fuente
+### 1.1. Instalación (Linux)
 
 ---
 
@@ -42,7 +42,7 @@ Para poder compilar el programa es necesario instalar las librerías de **OpenCV
 Luego de completar la instalación, idealmente se debe agregar la ruta de donde están las liberías de OpenCV al **PATH** del sistema, para facilitar el proceso a la hora de incluir las librerías en Qt Creator.
 
 #### 1.1.3. Compilación y Ejecución
-Para compilar y ejecutar el programa, se debe abrir el archivo `*.pro` incluido en la descarga con Qt Creator. En el archivo `*.pro`, se debe cerciorarse que la variable `INCLUDEPATH` tenga la ruta correcta de donde se encuentran los *headers* de OpenCV. 
+El programa está ubicado en la sección [Releases](https://github.com/Wauro21/elo328/releases/tag/v0.1-alpha) del repositorio. Para compilar y ejecutar el programa, se debe abrir el archivo `*.pro` incluido en la descarga con Qt Creator. En el archivo `*.pro`, se debe cerciorarse que la variable `INCLUDEPATH` tenga la ruta correcta de donde se encuentran los *headers* de OpenCV. 
 
 Luego, en la siguiente figura se muestra como compilar y ejecutar el programa dentro del IDE.
 <details>
