@@ -66,15 +66,38 @@ Para poder compilar el programa es necesario instalar las librerías de **OpenCV
 Luego de completar la instalación, idealmente se debe agregar la ruta de donde están las liberías de OpenCV al **PATH** del sistema, para facilitar el proceso a la hora de incluir las librerías en Qt Creator.
 
 #### 1.2.3. Compilación y Ejecución
-Para compilar y ejecutar el programa, se debe abrir el archivo `*.pro` incluido en la descarga con Qt Creator. En el archivo `*.pro`, se debe cerciorarse que la variable `INCLUDEPATH` tenga la ruta correcta de donde se encuentran los *headers* de OpenCV. 
+Para compilar y ejecutar el programa, se debe abrir el archivo `*.pro` incluido en la descarga con Qt Creator. En el archivo `*.pro`, se debe cerciorarse que la variable `INCLUDEPATH` tenga la ruta correcta de donde se encuentran los *headers* de OpenCV.
 
 Luego, en la siguiente figura se muestra como compilar y ejecutar el programa dentro del IDE.
 <details>
  <summary>Imagen</summary>
- 
+
   ![Vista de interfaz del IDE Qt Creator](/Project/zImagenesDoc/qt_run.png)
 </details>
 
 ---
 
 ## 2. Guía de Uso
+
+### 2.1 GUI
+
+![GUI Deglosada](/Project/zImagenesDoc/gui_explained.png)
+
+**1. Selección vídeo/imagen:** Permite seleccionar el archivo de entrada a analizar. Este puede ser un vídeo o una imagen/fotograma.
+
+**2. Selección telemetría:** Permite seleccionar el archivo de telemetría con el cual se comparará el archivo cargado en el paso anterior.
+
+**3. Selección pista:** Seleccionamos la pista a la que corresponden los archivos cargados en los puntos previos. Para este release solo está disponible realizar análisis para *Silverstone*.
+
+**4. Botonera:**
+ - Video Mode: En el caso de que el archivo que se desee analizar corresponda a un vídeo de una carrera, este botón permite seleccionar el análisis deseado.
+
+ - Image Mode: En el caso de que el archivo que se desee analizar corresponda a una imagen/fotograma de una carrera, este botón permite seleccionar el análisis deseado.
+
+ - Exit: Cierra el programa.
+
+### 2.2 Ejemplo de procesamiento: Vídeo
+
+<figure class="video_container">
+  <iframe src="https://youtu.be/Dbv4ch5B5ps" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
