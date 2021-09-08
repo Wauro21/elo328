@@ -48,7 +48,7 @@ Luego, en la siguiente figura se muestra como compilar y ejecutar el programa de
 <details>
  <summary>Imagen</summary>
 
-  ![Vista de interfaz del IDE Qt Creator](/Project/zImagenesDoc/qt_run.png)
+  ![Vista de interfaz del IDE Qt Creator](/zImagenesDoc/qt_run.png)
 </details>
 
 #### 1.1.4. Dataset
@@ -60,7 +60,7 @@ Dentro de los archivos del release vienen incluídas las imágenes y video de pr
 
 ### 2.1 GUI
 
-![GUI Deglosada](/Project/zImagenesDoc/gui_explained.png)
+![GUI Deglosada](/zImagenesDoc/gui_explained.png)
 
 **1. Selección vídeo/imagen:** Permite seleccionar el archivo de entrada a analizar. Este puede ser un vídeo o una imagen/fotograma.
 
